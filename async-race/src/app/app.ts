@@ -6,7 +6,6 @@ export class App {
     this.container = container;
 
     const header = new Header(router);
-
     this.container.append(header.getElement());
   }
 

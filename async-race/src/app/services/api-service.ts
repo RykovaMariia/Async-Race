@@ -4,14 +4,10 @@ interface Options {
   body?: object;
 }
 
-const BASE_URL = 'http://127.0.0.1:3000';
+export abstract class ApiService {
+  constructor(private baseUrl: string) {}
 
-class ApiService {
-  constructor(private baseUrl: string) {
-    this.baseUrl = baseUrl;
-  }
-
-  private async getResponse(endpoint: string, options: Options) {
+  protected async response(endpoint: string, options: Options) {
     try {
       const defaultHeaders = { 'Content-Type': 'application/json' };
       const config = {
@@ -30,10 +26,4 @@ class ApiService {
       throw new Error(`failed to patch data ${error}`);
     }
   }
-
-  public async getCars() {
-    return this.getResponse('/garage', { method: 'GET' });
-  }
 }
-
-export const apiService = new ApiService(BASE_URL);
