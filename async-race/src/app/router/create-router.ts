@@ -6,15 +6,15 @@ export function createRoutes(router: IRouter) {
     {
       path: '',
       component: async () => {
-        const { garage } = await import('../pages/garage-page/garage');
-        return garage;
+        const { Garage } = await import('../pages/garage-page/garage');
+        return new Garage();
       },
     },
     {
       path: AppRoute.Garage,
       component: async () => {
-        const { garage } = await import('../pages/garage-page/garage');
-        return garage;
+        const { Garage } = await import('../pages/garage-page/garage');
+        return new Garage();
       },
     },
     {

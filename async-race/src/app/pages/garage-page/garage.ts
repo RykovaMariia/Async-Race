@@ -18,7 +18,8 @@ export class Garage extends BaseComponent {
     const formForCreateCar = new GarageForm(
       { classNames: 'form-for-create' },
       (value: GarageFormValue) => {
-        this.createCars(value);
+        this.addNewCar(value);
+        this.addCarCount();
       },
     );
 
@@ -26,33 +27,31 @@ export class Garage extends BaseComponent {
 
     this.headingWithPage = new BaseComponent({ tagName: 'h2' });
 
-    this.addCarCountInHeading();
-    this.addCars();
+    this.addCarCount();
+    this.addAllCars();
 
     this.insertChildren([formForCreateCar, this.headingGarage]);
   }
 
-  private async addCarCountInHeading() {
+  private async addCarCount() {
     const cars: Car[] = await apiGarageService.getCars();
     this.headingGarage.setTextContent(`GARAGE (${cars.length})`);
   }
 
-  private async addCars() {
+  private async addAllCars() {
     const cars: Car[] = await apiGarageService.getCars();
     const carContainers = cars.map((car) => {
-      return new CarContainer({ textContent: car.name }, car.id);
+      return new CarContainer({}, car.id);
     });
     this.insertChildren([...carContainers]);
   }
 
-  private async createCars(value: GarageFormValue) {
+  private async addNewCar(value: GarageFormValue) {
     const car: Car = await apiGarageService.createCar({
       nameCar: value.carName,
       colorCar: value.carColor,
     });
-    const carContainer = new CarContainer({ textContent: car.name }, car.id);
+    const carContainer = new CarContainer({}, car.id);
     this.insertChild(carContainer);
   }
 }
-
-export const garage = new Garage();
