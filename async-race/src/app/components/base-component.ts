@@ -71,4 +71,11 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
   destroy() {
     this.element.remove();
   }
+
+  addEventListener<K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (ev: HTMLElementEventMap[K]) => void,
+  ) {
+    this.element.addEventListener(type, listener);
+  }
 }
