@@ -1,9 +1,9 @@
 interface BaseComponentProps {
   tagName: string;
   classNames?: string | string[];
-  textContent?: string | null;
+  textContent?: string;
   parentNode?: HTMLElement;
-  attribute?: AttributeElement;
+  attributes?: AttributeElement | AttributeElement[];
 }
 
 export type TaggedElementProps = Omit<BaseComponentProps, 'tagName'>;
@@ -18,14 +18,14 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
 
   constructor(props: BaseComponentProps) {
     this.element = document.createElement(props.tagName) as T;
-    this.setClassName(props.classNames ?? '');
+    if (props.classNames) this.setClassName(props.classNames);
     this.setTextContent(props.textContent ?? '');
     if (props.parentNode) {
       this.insertChild(props.parentNode);
     }
-    if (props.attribute) {
-      this.setAttribute(props.attribute);
-    }
+    if (props.attributes instanceof Array) {
+      props.attributes.forEach((attribute) => this.setAttribute(attribute));
+    } else if (props.attributes) this.setAttribute(props.attributes);
   }
 
   getElement() {
@@ -45,11 +45,11 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
   }
 
   getTextContent() {
-    return this.element.innerText;
+    return this.element.textContent;
   }
 
   setTextContent(text: string) {
-    this.element.innerText = text;
+    this.element.textContent = text;
   }
 
   insertChild(child: HTMLElement | BaseComponent): void {

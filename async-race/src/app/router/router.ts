@@ -14,7 +14,7 @@ function parseUrl(url: string) {
 export class Router implements IRouter {
   private routerOutlet: HTMLElement | null = null;
 
-  private previousPage: BaseComponent | undefined;
+  private previousPage: BaseComponent | null = null;
 
   private routes: Route[] = createRoutes(this);
 

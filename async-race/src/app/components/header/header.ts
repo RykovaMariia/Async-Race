@@ -7,10 +7,10 @@ export class Header extends BaseComponent {
   constructor(router: Router) {
     super({ tagName: 'header', classNames: 'header' });
 
-    const garageButton = new Button({ classNames: 'button', textContent: 'GARAGE' }, () =>
+    const garageButton = new Button({ textContent: 'GARAGE' }, () =>
       router.navigate(AppRoute.Garage),
     );
-    const winnersButton = new Button({ classNames: 'button', textContent: 'WINNERS' }, () =>
+    const winnersButton = new Button({ textContent: 'WINNERS' }, () =>
       router.navigate(AppRoute.Winners),
     );
 
