@@ -11,8 +11,8 @@ class ApiGarageService extends ApiService {
     return await this.response(`${id}`, { method: 'GET' });
   }
 
-  async createCar({ nameCar, carColor: colorCar }: { nameCar: string; carColor: string }) {
-    return await this.response('', { method: 'POST', body: { nameCar, colorCar } });
+  async createCar({ nameCar, colorCar }: { nameCar: string; colorCar: string }) {
+    return await this.response('', { method: 'POST', body: { name: nameCar, color: colorCar } });
   }
 
   async deleteCar(id: number) {

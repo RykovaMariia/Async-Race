@@ -12,6 +12,7 @@ export class GarageForm extends BaseComponent {
     super({ tagName: 'form', ...props });
 
     const textInput = new Input({ classNames: 'input_name' });
+
     const colorInput = new Input({ classNames: 'input_color' }, { valueType: 'color' });
     const submitButton = new Button({
       classNames: 'button_submit',
