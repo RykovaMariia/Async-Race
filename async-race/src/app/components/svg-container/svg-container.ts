@@ -4,7 +4,7 @@ export type SvgId = 'car' | 'flag' | 'delete' | 'settings' | 'power' | 'stop';
 
 const URL_SPRITE = './assets/sprite.svg';
 
-export class SvgSprite extends BaseComponent {
+export class SvgContainer extends BaseComponent {
   private svg: SVGSVGElement;
 
   constructor(props: TaggedElementProps, svgId: SvgId) {

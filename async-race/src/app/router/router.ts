@@ -1,5 +1,4 @@
 import { AppRoute } from '../enums/app-route';
-import { IRouter } from '../interfaces/router';
 import { Route } from '../interfaces/route';
 import { createRoutes } from './create-router';
 import { BaseComponent } from '../components/base-component';
@@ -11,12 +10,12 @@ function parseUrl(url: string) {
   return urlInfo;
 }
 
-export class Router implements IRouter {
+export class Router {
   private routerOutlet: HTMLElement | null = null;
 
   private previousPage: BaseComponent | null = null;
 
-  private routes: Route[] = createRoutes(this);
+  private routes: Route[] = createRoutes();
 
   constructor() {
     window.addEventListener('popstate', this.browserChangeHandler.bind(this));
@@ -48,7 +47,7 @@ export class Router implements IRouter {
       path: AppRoute.NotFound,
       component: async () => {
         const { NotFound } = await import('../pages/not-found-page/not-found');
-        return new NotFound(this);
+        return new NotFound();
       },
     };
 

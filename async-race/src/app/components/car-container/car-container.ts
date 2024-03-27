@@ -2,19 +2,19 @@ import './car-container.scss';
 import { Car } from '../../interfaces/car';
 import { apiGarageService } from '../../services/api-garage-service';
 import { BaseComponent, TaggedElementProps } from '../base-component';
-import { SvgSprite } from '../svg/svg';
+import { SvgContainer } from '../svg-container/svg-container';
 import { GarageForm, GarageFormValue } from '../garage-form/garage-form';
+import { Button } from '../button/button';
 
 export class CarContainer extends BaseComponent {
-  private carName: BaseComponent<HTMLElement>;
+  private carName = new BaseComponent({ tagName: 'h3' });
 
-  private carSvg: SvgSprite;
+  private carSvg = new SvgContainer({ classNames: 'car-icon' }, 'car');
+
+  private trackContainer = new BaseComponent({ tagName: 'div', classNames: 'track-container' });
 
   // eslint-disable-next-line max-lines-per-function
-  constructor(
-    props: TaggedElementProps,
-    private id: number,
-  ) {
+  constructor(props: TaggedElementProps, id: number) {
     super({ tagName: 'div', ...props });
 
     const settingsContainer = new BaseComponent({
@@ -22,66 +22,67 @@ export class CarContainer extends BaseComponent {
       classNames: 'settings-container',
     });
 
-    this.carName = new BaseComponent({ tagName: 'h3' });
-    this.setCarName();
-    const deleteSvg = new SvgSprite({ classNames: 'delete' }, 'delete');
-    deleteSvg.addEventListener('click', () => {
-      this.deleteCar();
+    this.setCarName(id);
+    this.setCarColor(id);
+
+    const deleteSvg = new SvgContainer({}, 'delete');
+    const deleteButton = new Button({ classNames: 'button_delete', parentNode: deleteSvg }, () => {
+      apiGarageService.deleteCar(id);
       this.destroy();
     });
+
     const settingsForm = new GarageForm(
       { classNames: 'change-car-form' },
       {
         buttonName: 'change',
         onSubmit: (value: GarageFormValue) => {
-          this.changeSettingsCar(value);
+          apiGarageService.updateCar(id, { name: value.carName, color: value.carColor });
           this.carName.setTextContent(value.carName);
           this.carSvg.setSvgColor(value.carColor);
           settingsForm.destroy();
         },
       },
     );
-    const settingsSvg = new SvgSprite({ classNames: 'settings' }, 'settings');
-    settingsSvg.addEventListener('click', () => {
-      if (settingsContainer.getElement().contains(settingsForm.getElement())) {
-        settingsForm.destroy();
-      } else {
-        settingsContainer.insertChild(settingsForm);
-      }
-    });
+    const settingsSvg = new SvgContainer({ classNames: 'button_settings' }, 'settings');
+    const settingsButton = new Button(
+      { classNames: 'button_settings', parentNode: settingsSvg },
+      () => {
+        if (settingsContainer.getElement().contains(settingsForm.getElement())) {
+          settingsForm.destroy();
+        } else {
+          settingsContainer.insertChild(settingsForm);
+        }
+      },
+    );
 
-    settingsContainer.insertChildren([settingsSvg, deleteSvg, this.carName]);
+    settingsContainer.insertChildren([settingsButton, deleteButton, this.carName]);
 
-    const trackContainer = new BaseComponent({ tagName: 'div', classNames: 'track-container' });
+    const powerButton = new SvgContainer({ classNames: 'button_power' }, 'power');
+    const stopButton = new SvgContainer({ classNames: 'button_stop' }, 'stop');
+    this.toggleButtons(powerButton, stopButton);
+    this.toggleButtons(stopButton, powerButton);
 
-    const powerSvg = new SvgSprite({ classNames: 'power' }, 'power');
-    const stopSvg = new SvgSprite({ classNames: 'stop' }, 'stop');
+    const flagSvg = new SvgContainer({ classNames: 'flag-icon' }, 'flag');
 
-    this.carSvg = new SvgSprite({ classNames: 'car-icon' }, 'car');
-    this.setCarColor();
+    this.trackContainer.insertChildren([powerButton, this.carSvg, flagSvg]);
 
-    const flagSvg = new SvgSprite({ classNames: 'flag-icon' }, 'flag');
-
-    trackContainer.insertChildren([powerSvg, stopSvg, this.carSvg, flagSvg]);
-
-    this.insertChildren([settingsContainer, trackContainer]);
+    this.insertChildren([settingsContainer, this.trackContainer]);
   }
 
-  private async setCarName() {
-    const car: Car = await apiGarageService.getCar(this.id);
+  private async setCarName(id: number) {
+    const car: Car = await apiGarageService.getCar(id);
     this.carName.setTextContent(car.name);
   }
 
-  private async setCarColor() {
-    const car: Car = await apiGarageService.getCar(this.id);
+  private async setCarColor(id: number) {
+    const car: Car = await apiGarageService.getCar(id);
     this.carSvg.setSvgColor(car.color);
   }
 
-  private async deleteCar() {
-    await apiGarageService.deleteCar(this.id);
-  }
-
-  private async changeSettingsCar(value: GarageFormValue) {
-    await apiGarageService.updateCar(this.id, { name: value.carName, color: value.carColor });
+  private toggleButtons(firstButton: BaseComponent, secondButton: BaseComponent) {
+    firstButton.addEventListener('click', () => {
+      firstButton.destroy();
+      this.trackContainer.insertChild(secondButton);
+    });
   }
 }

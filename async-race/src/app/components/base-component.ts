@@ -1,4 +1,4 @@
-interface BaseComponentProps {
+export interface BaseComponentProps {
   tagName: string;
   classNames?: string | string[];
   textContent?: string;

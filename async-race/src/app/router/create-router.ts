@@ -1,7 +1,6 @@
 import { AppRoute } from '../enums/app-route';
-import { IRouter } from '../interfaces/router';
 
-export function createRoutes(router: IRouter) {
+export function createRoutes() {
   return [
     {
       path: '',
@@ -21,14 +20,14 @@ export function createRoutes(router: IRouter) {
       path: AppRoute.Winners,
       component: async () => {
         const { Winners } = await import('../pages/winners-page/winners');
-        return new Winners(router);
+        return new Winners();
       },
     },
     {
       path: AppRoute.NotFound,
       component: async () => {
         const { NotFound } = await import('../pages/not-found-page/not-found');
-        return new NotFound(router);
+        return new NotFound();
       },
     },
   ];

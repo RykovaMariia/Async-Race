@@ -8,8 +8,6 @@ import { apiGarageService } from '../../services/api-garage-service';
 export class Garage extends BaseComponent {
   private garageHeading: BaseComponent<HTMLElement>;
 
-  private pageHeading: BaseComponent<HTMLElement>;
-
   constructor() {
     super({
       tagName: 'main',
@@ -29,12 +27,12 @@ export class Garage extends BaseComponent {
       },
     );
 
-    this.pageHeading = new BaseComponent({ tagName: 'h3' });
+    const pageHeading = new BaseComponent({ tagName: 'h2', textContent: 'Page' });
 
     this.addCarCount();
     this.addAllCars();
 
-    this.insertChildren([createCarForm, this.garageHeading]);
+    this.insertChildren([createCarForm, this.garageHeading, pageHeading]);
   }
 
   private async addCarCount() {
@@ -53,7 +51,7 @@ export class Garage extends BaseComponent {
   private async addNewCar(value: GarageFormValue) {
     const car: Car = await apiGarageService.createCar({
       carName: value.carName,
-      colorCar: value.carColor,
+      carColor: value.carColor,
     });
     const carContainer = new CarContainer({ classNames: 'car-container' }, car.id);
     this.insertChild(carContainer);

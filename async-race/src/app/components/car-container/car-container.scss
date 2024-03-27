@@ -1,4 +1,5 @@
 @use '../../../styles/constants.scss';
+@use '../../../styles/mixins.scss';
 
 .car-container {
   width: 100%;
@@ -13,20 +14,28 @@
   gap: 10px;
 }
 
-.delete,
-.settings {
+.button_delete,
+.button_settings {
   position: relative;
   cursor: pointer;
+  background-color: constants.$color-background-body;
+  box-shadow: none;
+  transform: none;
+  padding: 0;
 
+  &::before {
+    height: 0;
+  }
   svg {
     width: 20px;
     height: 20px;
     fill: constants.$color-text-light;
+    transition: 0.5s ease-in-out;
   }
 
   &:hover {
     svg {
-      fill: constants.$color-button-light;
+      fill: constants.$color-button-dark;
     }
   }
 }
@@ -55,21 +64,38 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  padding-left: 10px;
 }
 
-.power,
-.stop {
+.button_power,
+.button_stop {
   cursor: pointer;
+  background-color: constants.$color-background-body;
+  box-shadow: none;
+  transform: none;
+  padding: 0;
 
+  &::before {
+    height: 0;
+  }
   svg {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     fill: constants.$color-text-light;
+    transition: 0.5s ease-in-out;
+  }
+
+  &:hover {
+    svg {
+      fill: constants.$color-button-light;
+    }
   }
 }
 
 .car-icon {
-  position: relative;
+  position: absolute;
+  width: max-content;
+  left: 100px;
 
   svg {
     width: 50px;
@@ -79,7 +105,7 @@
 
 .flag-icon {
   position: absolute;
-  right: 100px;
+  right: 85px;
 
   svg {
     fill: constants.$color-text-light;
