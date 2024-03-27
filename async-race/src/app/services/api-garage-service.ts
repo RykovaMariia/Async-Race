@@ -11,7 +11,7 @@ class ApiGarageService extends ApiService {
     return await this.response(`${id}`, { method: 'GET' });
   }
 
-  async createCar({ nameCar, colorCar }: { nameCar: string; colorCar: string }) {
+  async createCar({ carName: nameCar, colorCar }: { carName: string; colorCar: string }) {
     return await this.response('', { method: 'POST', body: { name: nameCar, color: colorCar } });
   }
 
@@ -19,7 +19,7 @@ class ApiGarageService extends ApiService {
     return await this.response(`${id}`, { method: 'DELETE' });
   }
 
-  async updateCar(id: number, update: { nameCar: string; carColor: string }) {
+  async updateCar(id: number, update: { name: string; color: string }) {
     return await this.response(`${id}`, { method: 'PUT', body: update });
   }
 }

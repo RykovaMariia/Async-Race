@@ -1,3 +1,4 @@
+import './garage.scss';
 import { BaseComponent } from '../../components/base-component';
 import { CarContainer } from '../../components/car-container/car-container';
 import { GarageForm, GarageFormValue } from '../../components/garage-form/garage-form';
@@ -5,9 +6,9 @@ import { Car } from '../../interfaces/car';
 import { apiGarageService } from '../../services/api-garage-service';
 
 export class Garage extends BaseComponent {
-  private headingGarage: BaseComponent<HTMLElement>;
+  private garageHeading: BaseComponent<HTMLElement>;
 
-  private headingWithPage: BaseComponent<HTMLElement>;
+  private pageHeading: BaseComponent<HTMLElement>;
 
   constructor() {
     super({
@@ -15,43 +16,46 @@ export class Garage extends BaseComponent {
       classNames: 'garage',
     });
 
-    const formForCreateCar = new GarageForm(
-      { classNames: 'form-for-create' },
-      (value: GarageFormValue) => {
-        this.addNewCar(value);
-        this.addCarCount();
+    this.garageHeading = new BaseComponent({ tagName: 'h2', classNames: 'garage-heading' });
+
+    const createCarForm = new GarageForm(
+      { classNames: 'create-car-form' },
+      {
+        buttonName: 'create',
+        onSubmit: (value: GarageFormValue) => {
+          this.addNewCar(value);
+          this.addCarCount();
+        },
       },
     );
 
-    this.headingGarage = new BaseComponent({ tagName: 'h1' });
-
-    this.headingWithPage = new BaseComponent({ tagName: 'h2' });
+    this.pageHeading = new BaseComponent({ tagName: 'h3' });
 
     this.addCarCount();
     this.addAllCars();
 
-    this.insertChildren([formForCreateCar, this.headingGarage]);
+    this.insertChildren([createCarForm, this.garageHeading]);
   }
 
   private async addCarCount() {
     const cars: Car[] = await apiGarageService.getCars();
-    this.headingGarage.setTextContent(`GARAGE (${cars.length})`);
+    this.garageHeading.setTextContent(`GARAGE (${cars.length})`);
   }
 
   private async addAllCars() {
     const cars: Car[] = await apiGarageService.getCars();
     const carContainers = cars.map((car) => {
-      return new CarContainer({}, car.id);
+      return new CarContainer({ classNames: 'car-container' }, car.id);
     });
     this.insertChildren([...carContainers]);
   }
 
   private async addNewCar(value: GarageFormValue) {
     const car: Car = await apiGarageService.createCar({
-      nameCar: value.carName,
+      carName: value.carName,
       colorCar: value.carColor,
     });
-    const carContainer = new CarContainer({}, car.id);
+    const carContainer = new CarContainer({ classNames: 'car-container' }, car.id);
     this.insertChild(carContainer);
   }
 }

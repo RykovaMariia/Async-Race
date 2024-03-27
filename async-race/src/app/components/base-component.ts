@@ -2,7 +2,7 @@ interface BaseComponentProps {
   tagName: string;
   classNames?: string | string[];
   textContent?: string;
-  parentNode?: HTMLElement;
+  parentNode?: HTMLElement | BaseComponent;
   attributes?: AttributeElement | AttributeElement[];
 }
 

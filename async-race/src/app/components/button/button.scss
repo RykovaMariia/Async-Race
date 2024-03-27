@@ -1,0 +1,42 @@
+@use '../../../styles/constants.scss';
+
+button {
+  box-sizing: border-box;
+  background-color: constants.$color-text-light;
+  cursor: pointer;
+  padding: 5px 10px;
+  font-size: 2rem;
+  font-family: inherit;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 6px 6px 0 constants.$color-shadow;
+  transform: skewX(-15deg);
+  z-index: 1;
+  transition: 0.5s;
+
+  &:hover {
+    color: constants.$color-text-light;
+  }
+}
+
+button::before {
+  content: '';
+  width: 0;
+  height: 45px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: linear-gradient(
+    to right,
+    constants.$color-button-dark 0%,
+    constants.$color-button-light 100%
+  );
+  transition: 0.5s ease-in-out;
+  display: block;
+  z-index: -1;
+}
+
+button:hover::before {
+  width: 100%;
+}

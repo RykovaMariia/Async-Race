@@ -1,3 +1,4 @@
+import './button.scss';
 import { BaseComponent, TaggedElementProps } from '../base-component';
 
 export class Button extends BaseComponent<HTMLButtonElement> {

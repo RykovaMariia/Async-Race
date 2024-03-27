@@ -1,14 +1,14 @@
-import { BaseComponent } from '../base-component';
+import { BaseComponent, TaggedElementProps } from '../base-component';
 
-export type SvgId = 'car' | 'flag';
+export type SvgId = 'car' | 'flag' | 'delete' | 'settings' | 'power' | 'stop';
 
 const URL_SPRITE = './assets/sprite.svg';
 
 export class SvgSprite extends BaseComponent {
   private svg: SVGSVGElement;
 
-  constructor(svgId: SvgId) {
-    super({ tagName: 'div', classNames: 'car' });
+  constructor(props: TaggedElementProps, svgId: SvgId) {
+    super({ tagName: 'div', ...props });
 
     this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     this.svg.setAttributeNS(null, 'class', 'icon');
