@@ -9,6 +9,8 @@ export interface GarageFormValue {
 }
 
 export class GarageForm extends BaseComponent {
+  private textInput: Input;
+
   constructor(
     props: TaggedElementProps,
     { buttonName, onSubmit }: { buttonName: string; onSubmit: (value: GarageFormValue) => void },
@@ -16,7 +18,7 @@ export class GarageForm extends BaseComponent {
     super({ tagName: 'form', ...props });
     this.setClassName('form');
 
-    const textInput = new Input({
+    this.textInput = new Input({
       classNames: 'input_name',
       attributes: [
         { name: 'placeholder', value: 'Inter name your car' },
@@ -33,9 +35,13 @@ export class GarageForm extends BaseComponent {
 
     this.addEventListener('submit', (e) => {
       e.preventDefault();
-      onSubmit({ carName: textInput.getValue(), carColor: colorInput.getValue() });
+      onSubmit({ carName: this.textInput.getValue(), carColor: colorInput.getValue() });
     });
 
-    this.insertChildren([textInput, colorInput, submitButton]);
+    this.insertChildren([this.textInput, colorInput, submitButton]);
+  }
+
+  setTextInputValue(value: string) {
+    this.textInput.setValue(value);
   }
 }

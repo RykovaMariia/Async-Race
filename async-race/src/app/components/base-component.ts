@@ -68,6 +68,17 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
     }
   }
 
+  setStyleTransformTranslateX(translate: number) {
+    this.element.style.transform = `translateX(${translate}px)`;
+  }
+
+  isContainsChild(child: HTMLElement | BaseComponent) {
+    if (child instanceof HTMLElement) {
+      return this.element.contains(child);
+    }
+    return this.element.contains(child.getElement());
+  }
+
   destroy() {
     this.element.remove();
   }

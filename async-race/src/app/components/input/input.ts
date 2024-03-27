@@ -16,4 +16,8 @@ export class Input extends BaseComponent<HTMLInputElement> {
   getValue() {
     return this.element.value;
   }
+
+  setValue(value: string) {
+    this.element.value = value;
+  }
 }
