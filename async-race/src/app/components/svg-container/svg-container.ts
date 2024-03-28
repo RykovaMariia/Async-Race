@@ -7,7 +7,7 @@ const URL_SPRITE = './assets/sprite.svg';
 export class SvgContainer extends BaseComponent {
   private svg: SVGSVGElement;
 
-  constructor(props: TaggedElementProps, svgId: SvgId) {
+  constructor(svgId: SvgId, props?: TaggedElementProps) {
     super({ tagName: 'div', ...props });
 
     this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');

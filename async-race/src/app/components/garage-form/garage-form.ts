@@ -20,17 +20,14 @@ export class GarageForm extends BaseComponent {
 
     this.textInput = new Input({
       classNames: 'input_name',
-      attributes: [
-        { name: 'placeholder', value: 'Inter name your car' },
-        { name: 'required', value: 'required' },
-      ],
+      attribute: { name: 'placeholder', value: 'Inter name your car' },
     });
 
     const colorInput = new Input({ classNames: 'input_color' }, { valueType: 'color' });
     const submitButton = new Button({
       classNames: 'button_submit',
       textContent: buttonName,
-      attributes: { name: 'type', value: 'submit' },
+      attribute: { name: 'type', value: 'submit' },
     });
 
     this.addEventListener('submit', (e) => {

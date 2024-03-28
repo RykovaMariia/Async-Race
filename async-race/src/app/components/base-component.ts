@@ -3,7 +3,7 @@ export interface BaseComponentProps {
   classNames?: string | string[];
   textContent?: string;
   parentNode?: HTMLElement | BaseComponent;
-  attributes?: AttributeElement | AttributeElement[];
+  attribute?: AttributeElement;
 }
 
 export type TaggedElementProps = Omit<BaseComponentProps, 'tagName'>;
@@ -23,9 +23,7 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
     if (props.parentNode) {
       this.insertChild(props.parentNode);
     }
-    if (props.attributes instanceof Array) {
-      props.attributes.forEach((attribute) => this.setAttribute(attribute));
-    } else if (props.attributes) this.setAttribute(props.attributes);
+    if (props.attribute) this.setAttribute(props.attribute);
   }
 
   getElement() {

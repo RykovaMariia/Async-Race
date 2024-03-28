@@ -6,6 +6,7 @@ import { SvgContainer } from '../svg-container/svg-container';
 import { GarageForm, GarageFormValue } from '../garage-form/garage-form';
 import { Button } from '../button/button';
 import { apiEngineService } from '../../services/api-engine-service';
+import Observable from '../../utils/observable';
 
 interface RideParam {
   velocity: number;
@@ -19,13 +20,15 @@ function easeInOut(time: number) {
 export class CarContainer extends BaseComponent {
   private carName = new BaseComponent({ tagName: 'h3' });
 
-  private carSvg = new SvgContainer({ classNames: 'car-icon' }, 'car');
+  private carSvg = new SvgContainer('car', { classNames: 'car-icon' });
 
   private trackContainer = new BaseComponent({ tagName: 'div', classNames: 'track-container' });
 
   private requestAnimationFrameId: number = 0;
 
   private settingsForm: GarageForm;
+
+  private isSettingsFormOpen = new Observable(false);
 
   // eslint-disable-next-line max-lines-per-function
   constructor(props: TaggedElementProps, id: number) {
@@ -36,44 +39,41 @@ export class CarContainer extends BaseComponent {
       classNames: 'settings-container',
     });
 
-    this.setCarName(id);
-    this.setCarColor(id);
-
-    const deleteSvg = new SvgContainer({}, 'delete');
-    const deleteButton = new Button({ classNames: 'button_delete', parentNode: deleteSvg }, () => {
-      apiGarageService.deleteCar(id);
-      this.destroy();
+    this.isSettingsFormOpen.subscribe((isOpen) => {
+      if (isOpen) {
+        settingsContainer.insertChild(this.settingsForm);
+      } else {
+        this.settingsForm.destroy();
+      }
     });
+
+    this.setCarNameAndColor(id);
+
+    const deleteSvg = new SvgContainer('delete');
+    const deleteButton = new Button({ classNames: 'button_delete', parentNode: deleteSvg }, () =>
+      this.deleteCar(id),
+    );
 
     this.settingsForm = new GarageForm(
       { classNames: 'change-car-form' },
       {
         buttonName: 'change',
-        onSubmit: (value: GarageFormValue) => {
-          apiGarageService.updateCar(id, { name: value.carName, color: value.carColor });
-          this.carName.setTextContent(value.carName);
-          this.carSvg.setSvgColor(value.carColor);
-          this.settingsForm.destroy();
-        },
+        onSubmit: (value: GarageFormValue) => this.onSubmitSettingsForm(id, value),
       },
     );
-    const settingsSvg = new SvgContainer({ classNames: 'button_settings' }, 'settings');
+    const settingsSvg = new SvgContainer('settings', { classNames: 'button_settings' });
     const settingsButton = new Button(
       { classNames: 'button_settings', parentNode: settingsSvg },
       () => {
-        if (settingsContainer.isContainsChild(this.settingsForm)) {
-          this.settingsForm.destroy();
-        } else {
-          settingsContainer.insertChild(this.settingsForm);
-        }
+        this.isSettingsFormOpen.notify((prev) => !prev);
       },
     );
 
     settingsContainer.insertChildren([settingsButton, deleteButton, this.carName]);
 
-    const powerSvg = new SvgContainer({}, 'power');
+    const powerSvg = new SvgContainer('power');
     const powerButton = new Button({ classNames: 'button_power', parentNode: powerSvg });
-    const stopSvg = new SvgContainer({}, 'stop');
+    const stopSvg = new SvgContainer('stop');
     const stopButton = new Button({ classNames: 'button_stop', parentNode: stopSvg });
     powerButton.setOnClick(() => {
       this.driveCarAnimation(id);
@@ -86,22 +86,30 @@ export class CarContainer extends BaseComponent {
 
     this.toggleButtons(stopButton, powerButton);
 
-    const flagSvg = new SvgContainer({ classNames: 'flag-icon' }, 'flag');
+    const flagSvg = new SvgContainer('flag', { classNames: 'flag-icon' });
 
     this.trackContainer.insertChildren([powerButton, this.carSvg, flagSvg]);
 
     this.insertChildren([settingsContainer, this.trackContainer]);
   }
 
-  private async setCarName(id: number) {
+  private async setCarNameAndColor(id: number) {
     const car: Car = await apiGarageService.getCar(id);
     this.carName.setTextContent(car.name);
     this.settingsForm.setTextInputValue(car.name);
+    this.carSvg.setSvgColor(car.color);
   }
 
-  private async setCarColor(id: number) {
-    const car: Car = await apiGarageService.getCar(id);
-    this.carSvg.setSvgColor(car.color);
+  private async deleteCar(id: number) {
+    await apiGarageService.deleteCar(id);
+    this.destroy();
+  }
+
+  private async onSubmitSettingsForm(id: number, value: GarageFormValue) {
+    await apiGarageService.updateCar(id, { name: value.carName, color: value.carColor });
+    this.carName.setTextContent(value.carName);
+    this.carSvg.setSvgColor(value.carColor);
+    this.isSettingsFormOpen.notify(false);
   }
 
   private toggleButtons(firstButton: BaseComponent, secondButton: BaseComponent) {
@@ -113,7 +121,7 @@ export class CarContainer extends BaseComponent {
     const rideParam: RideParam = await apiEngineService.starCarsEngine(id);
     const animationTime = rideParam.distance / rideParam.velocity;
     this.startDrive(animationTime, (progress) => {
-      const distance = document.body.clientWidth - 200;
+      const distance = document.body.clientWidth - 220;
       const translate = easeInOut(progress) * distance;
       this.carSvg.setStyleTransformTranslateX(translate);
     });
@@ -127,14 +135,6 @@ export class CarContainer extends BaseComponent {
       cancelAnimationFrame(this.requestAnimationFrameId);
     }
   };
-
-  private async stopAnimation(id: number) {
-    const rideParam: RideParam = await apiEngineService.stopCarsEngine(id);
-    if (rideParam.velocity === 0) {
-      cancelAnimationFrame(this.requestAnimationFrameId);
-      this.carSvg.setStyleTransformTranslateX(0);
-    }
-  }
 
   private startDrive = (duration: number, callback: FrameRequestCallback) => {
     let startAnimation: number = 0;
@@ -154,4 +154,12 @@ export class CarContainer extends BaseComponent {
     };
     this.requestAnimationFrameId = requestAnimationFrame(measure);
   };
+
+  private async stopAnimation(id: number) {
+    const rideParam: RideParam = await apiEngineService.stopCarsEngine(id);
+    if (rideParam.velocity === 0) {
+      cancelAnimationFrame(this.requestAnimationFrameId);
+      this.carSvg.setStyleTransformTranslateX(0);
+    }
+  }
 }

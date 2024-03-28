@@ -4,15 +4,15 @@ const BASE_URL = 'http://127.0.0.1:3000/engine';
 
 class ApiEngineService extends ApiService {
   async starCarsEngine(id: number) {
-    return await this.response(`?id=${id}&status=started`, { method: 'PATCH' });
+    return await this.request(`?id=${id}&status=started`, { method: 'PATCH' });
   }
 
   async stopCarsEngine(id: number) {
-    return await this.response(`?id=${id}&status=stopped`, { method: 'PATCH' });
+    return await this.request(`?id=${id}&status=stopped`, { method: 'PATCH' });
   }
 
   async driveCarsEngine(id: number) {
-    return await this.response(`?id=${id}&status=drive`, { method: 'PATCH' });
+    return await this.request(`?id=${id}&status=drive`, { method: 'PATCH' });
   }
 }
 

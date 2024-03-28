@@ -7,7 +7,7 @@ interface Options {
 export abstract class ApiService {
   constructor(private baseUrl: string) {}
 
-  protected async response(endpoint: string, options: Options) {
+  protected async request(endpoint: string, options: Options) {
     try {
       const defaultHeaders = { 'Content-Type': 'application/json' };
       const config = {
