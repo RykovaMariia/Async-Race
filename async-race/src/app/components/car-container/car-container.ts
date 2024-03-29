@@ -6,7 +6,7 @@ import { SvgContainer } from '../svg-container/svg-container';
 import { GarageForm, GarageFormValue } from '../garage-form/garage-form';
 import { Button } from '../button/button';
 import { apiEngineService } from '../../services/api-engine-service';
-import { Observable } from '../../services/observable';
+import { Observable, carCount } from '../../services/observable';
 
 interface RideParam {
   velocity: number;
@@ -105,6 +105,7 @@ export class CarContainer extends BaseComponent {
 
   private async deleteCar(id: number) {
     await apiGarageService.deleteCar(id);
+    carCount.notify((count) => count - 1);
     this.destroy();
   }
 
