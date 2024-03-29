@@ -4,8 +4,12 @@ interface Options {
   body?: object;
 }
 
+export type ApiPath = 'garage' | 'engine';
+
+export const API_URL = 'http://127.0.0.1:3000';
+
 export abstract class ApiService {
-  constructor(private baseUrl: string) {}
+  constructor(private path: ApiPath) {}
 
   protected async request(endpoint: string, options: Options) {
     try {
@@ -19,7 +23,7 @@ export abstract class ApiService {
         body: JSON.stringify(options.body),
       };
 
-      const response = await fetch(`${this.baseUrl}/${endpoint}`, config);
+      const response = await fetch(`${API_URL}/${this.path}/${endpoint}`, config);
       if (!response.ok) throw new Error('failed to patch data');
       return await response.json();
     } catch (error) {

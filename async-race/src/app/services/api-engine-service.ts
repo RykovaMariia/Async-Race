@@ -1,19 +1,23 @@
 import { ApiService } from './api-service';
 
-const BASE_URL = 'http://127.0.0.1:3000/engine';
+export type Status = 'started' | 'stopped' | 'drive';
 
 class ApiEngineService extends ApiService {
-  async starCarsEngine(id: number) {
-    return await this.request(`?id=${id}&status=started`, { method: 'PATCH' });
+  private requestEngine(id: number, status: Status) {
+    return this.request(`?id=${id}&status=${status}`, { method: 'PATCH' });
   }
 
-  async stopCarsEngine(id: number) {
-    return await this.request(`?id=${id}&status=stopped`, { method: 'PATCH' });
+  starCarsEngine(id: number) {
+    return this.requestEngine(id, 'started');
   }
 
-  async driveCarsEngine(id: number) {
-    return await this.request(`?id=${id}&status=drive`, { method: 'PATCH' });
+  stopCarsEngine(id: number) {
+    return this.requestEngine(id, 'stopped');
+  }
+
+  driveCarsEngine(id: number) {
+    return this.requestEngine(id, 'drive');
   }
 }
 
-export const apiEngineService = new ApiEngineService(BASE_URL);
+export const apiEngineService = new ApiEngineService('engine');

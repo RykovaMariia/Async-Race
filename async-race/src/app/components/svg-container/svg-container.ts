@@ -17,7 +17,7 @@ export class SvgContainer extends BaseComponent {
     use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `${URL_SPRITE}#${svgId}`);
 
     this.svg.append(use);
-    this.getElement().append(this.svg);
+    this.element.append(this.svg);
   }
 
   setSvgColor(color: string) {

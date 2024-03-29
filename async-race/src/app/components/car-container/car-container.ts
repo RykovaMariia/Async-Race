@@ -26,7 +26,7 @@ export class CarContainer extends BaseComponent {
 
   private requestAnimationFrameId: number = 0;
 
-  private settingsForm: GarageForm;
+  private settingsForm: GarageForm | null;
 
   private isSettingsFormOpen = new Observable(false);
 
@@ -40,14 +40,16 @@ export class CarContainer extends BaseComponent {
     });
 
     this.isSettingsFormOpen.subscribe((isOpen) => {
-      if (isOpen) {
-        settingsContainer.insertChild(this.settingsForm);
-      } else {
-        this.settingsForm.destroy();
+      if (this.settingsForm) {
+        if (isOpen) {
+          settingsContainer.insertChild(this.settingsForm);
+        } else {
+          this.settingsForm.destroy();
+        }
       }
     });
 
-    this.setCarNameAndColor(id);
+    this.setCar(id);
 
     const deleteSvg = new SvgContainer('delete');
     const deleteButton = new Button({ classNames: 'button_delete', parentNode: deleteSvg }, () =>
@@ -77,14 +79,12 @@ export class CarContainer extends BaseComponent {
     const stopButton = new Button({ classNames: 'button_stop', parentNode: stopSvg });
     powerButton.setOnClick(() => {
       this.driveCarAnimation(id);
-      this.toggleButtons(powerButton, stopButton);
+      powerButton.toggleButton(stopButton);
     });
     stopButton.setOnClick(() => {
       this.stopAnimation(id);
-      this.toggleButtons(stopButton, powerButton);
+      stopButton.toggleButton(powerButton);
     });
-
-    this.toggleButtons(stopButton, powerButton);
 
     const flagSvg = new SvgContainer('flag', { classNames: 'flag-icon' });
 
@@ -93,10 +93,10 @@ export class CarContainer extends BaseComponent {
     this.insertChildren([settingsContainer, this.trackContainer]);
   }
 
-  private async setCarNameAndColor(id: number) {
+  private async setCar(id: number) {
     const car: Car = await apiGarageService.getCar(id);
     this.carName.setTextContent(car.name);
-    this.settingsForm.setTextInputValue(car.name);
+    this.settingsForm?.setTextInputValue(car.name);
     this.carSvg.setSvgColor(car.color);
   }
 
@@ -110,11 +110,6 @@ export class CarContainer extends BaseComponent {
     this.carName.setTextContent(value.carName);
     this.carSvg.setSvgColor(value.carColor);
     this.isSettingsFormOpen.notify(false);
-  }
-
-  private toggleButtons(firstButton: BaseComponent, secondButton: BaseComponent) {
-    firstButton.destroy();
-    this.trackContainer.insertChild(secondButton);
   }
 
   private async driveCarAnimation(id: number) {
@@ -131,7 +126,7 @@ export class CarContainer extends BaseComponent {
   private driveResponse = async (id: number) => {
     try {
       await apiEngineService.driveCarsEngine(id);
-    } catch (err) {
+    } catch {
       cancelAnimationFrame(this.requestAnimationFrameId);
     }
   };

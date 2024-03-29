@@ -23,12 +23,5 @@ export function createRoutes() {
         return new Winners();
       },
     },
-    {
-      path: AppRoute.NotFound,
-      component: async () => {
-        const { NotFound } = await import('../pages/not-found-page/not-found');
-        return new NotFound();
-      },
-    },
   ];
 }

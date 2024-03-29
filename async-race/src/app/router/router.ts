@@ -17,6 +17,14 @@ export class Router {
 
   private routes: Route[] = createRoutes();
 
+  private notFoundRoute = {
+    path: AppRoute.NotFound,
+    component: async () => {
+      const { NotFound } = await import('../pages/not-found-page/not-found');
+      return new NotFound();
+    },
+  };
+
   constructor() {
     window.addEventListener('popstate', this.browserChangeHandler.bind(this));
   }
@@ -43,15 +51,7 @@ export class Router {
   }
 
   redirectedToNotFound(url: string) {
-    const notFoundRoute = {
-      path: AppRoute.NotFound,
-      component: async () => {
-        const { NotFound } = await import('../pages/not-found-page/not-found');
-        return new NotFound();
-      },
-    };
-
-    this.renderComponentFromRoute(notFoundRoute, url);
+    this.renderComponentFromRoute(this.notFoundRoute, url);
   }
 
   renderComponentFromRoute(route: Route, url: string) {

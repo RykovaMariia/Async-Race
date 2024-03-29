@@ -15,4 +15,9 @@ export class Button extends BaseComponent<HTMLButtonElement> {
   setOnClick(onclick: (e: Event) => void) {
     this.element.addEventListener('click', onclick);
   }
+
+  toggleButton(button: Button) {
+    this.element.parentElement?.append(button.element);
+    this.destroy();
+  }
 }
