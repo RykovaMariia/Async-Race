@@ -6,7 +6,7 @@ import { SvgContainer } from '../svg-container/svg-container';
 import { GarageForm, GarageFormValue } from '../garage-form/garage-form';
 import { Button } from '../button/button';
 import { apiEngineService } from '../../services/api-engine-service';
-import Observable from '../../utils/observable';
+import { Observable } from '../../services/observable';
 
 interface RideParam {
   velocity: number;

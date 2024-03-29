@@ -18,6 +18,11 @@ button {
   &:hover {
     color: constants.$color-text-light;
   }
+
+  &:disabled {
+    color: constants.$color-text-light;
+    cursor: auto;
+  }
 }
 
 button::before {
@@ -37,6 +42,20 @@ button::before {
   z-index: -1;
 }
 
-button:hover::before {
+button:hover::before,
+button:disabled::before {
   width: 100%;
+}
+
+.button_garage:hover {
+  padding-left: 45px;
+}
+
+.button_winners:hover {
+  padding-right: 45px;
+}
+
+.button_garage:disabled,
+.button_winners:disabled {
+  padding: 5px 10px;
 }
