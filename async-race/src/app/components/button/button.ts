@@ -1,10 +1,16 @@
 import './button.scss';
 import { BaseComponent, TaggedElementProps } from '../base-component';
 
+interface ButtonProps {
+  type?: string;
+  onclick?: (e: Event) => void;
+}
+
 export class Button extends BaseComponent<HTMLButtonElement> {
-  constructor(props: TaggedElementProps, onclick?: (e: Event) => void) {
+  constructor(props: TaggedElementProps, buttonProps?: ButtonProps) {
     super({ tagName: 'button', ...props });
-    if (onclick) this.setOnClick(onclick);
+    if (buttonProps?.onclick) this.setOnClick(buttonProps.onclick);
+    if (buttonProps?.type) this.setAttribute({ name: 'type', value: buttonProps.type });
     this.setClassName('button');
   }
 

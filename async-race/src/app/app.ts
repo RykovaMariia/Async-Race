@@ -3,7 +3,7 @@ import { router } from './router/router';
 
 export class App {
   constructor(private container: HTMLElement) {
-    const header = new Header(router);
+    const header = new Header();
     this.container.append(header.getElement());
   }
 

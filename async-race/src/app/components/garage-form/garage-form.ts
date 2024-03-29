@@ -18,17 +18,21 @@ export class GarageForm extends BaseComponent {
     super({ tagName: 'form', ...props });
     this.setClassName('form');
 
-    this.textInput = new Input({
-      classNames: 'input_name',
-      attribute: { name: 'placeholder', value: 'Inter name your car' },
-    });
+    this.textInput = new Input(
+      {
+        classNames: 'input_name',
+      },
+      { placeholder: 'Inter name your car' },
+    );
 
-    const colorInput = new Input({ classNames: 'input_color' }, { valueType: 'color' });
-    const submitButton = new Button({
-      classNames: 'button_submit',
-      textContent: buttonName,
-      attribute: { name: 'type', value: 'submit' },
-    });
+    const colorInput = new Input({ classNames: 'input_color' }, { type: 'color' });
+    const submitButton = new Button(
+      {
+        classNames: 'button_submit',
+        textContent: buttonName,
+      },
+      { type: 'submit' },
+    );
 
     this.addEventListener('submit', (e) => {
       e.preventDefault();

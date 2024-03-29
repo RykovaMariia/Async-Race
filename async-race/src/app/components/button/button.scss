@@ -3,13 +3,13 @@
 button {
   box-sizing: border-box;
   background-color: constants.$color-text-light;
+  color: constants.$color-text-dark;
   cursor: pointer;
   padding: 5px 10px;
   font-size: 2rem;
   font-family: inherit;
   border: none;
   position: relative;
-  overflow: hidden;
   box-shadow: 6px 6px 0 constants.$color-shadow;
   transform: skewX(-15deg);
   z-index: 1;
@@ -23,7 +23,7 @@ button {
 button::before {
   content: '';
   width: 0;
-  height: 45px;
+  height: 100%;
   position: absolute;
   top: 0;
   left: 0;

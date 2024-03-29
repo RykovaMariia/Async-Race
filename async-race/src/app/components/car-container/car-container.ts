@@ -52,8 +52,9 @@ export class CarContainer extends BaseComponent {
     this.setCar(id);
 
     const deleteSvg = new SvgContainer('delete');
-    const deleteButton = new Button({ classNames: 'button_delete', parentNode: deleteSvg }, () =>
-      this.deleteCar(id),
+    const deleteButton = new Button(
+      { classNames: 'button_delete', parentNode: deleteSvg },
+      { onclick: () => this.deleteCar(id) },
     );
 
     this.settingsForm = new GarageForm(
@@ -66,8 +67,10 @@ export class CarContainer extends BaseComponent {
     const settingsSvg = new SvgContainer('settings', { classNames: 'button_settings' });
     const settingsButton = new Button(
       { classNames: 'button_settings', parentNode: settingsSvg },
-      () => {
-        this.isSettingsFormOpen.notify((prev) => !prev);
+      {
+        onclick: () => {
+          this.isSettingsFormOpen.notify((prev) => !prev);
+        },
       },
     );
 
@@ -117,8 +120,8 @@ export class CarContainer extends BaseComponent {
     const animationTime = rideParam.distance / rideParam.velocity;
     this.startDrive(animationTime, (progress) => {
       const distance = document.body.clientWidth - 220;
-      const translate = easeInOut(progress) * distance;
-      this.carSvg.setStyleTransformTranslateX(translate);
+      const translateX = easeInOut(progress) * distance;
+      this.carSvg.setTransform({ translateX });
     });
     this.driveResponse(id);
   }
@@ -154,7 +157,7 @@ export class CarContainer extends BaseComponent {
     const rideParam: RideParam = await apiEngineService.stopCarsEngine(id);
     if (rideParam.velocity === 0) {
       cancelAnimationFrame(this.requestAnimationFrameId);
-      this.carSvg.setStyleTransformTranslateX(0);
+      this.carSvg.setTransform({ translateX: 0 });
     }
   }
 }

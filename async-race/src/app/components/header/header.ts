@@ -1,11 +1,10 @@
 import './header.scss';
 import { AppRoute } from '../../enums/app-route';
-import { Router } from '../../router/router';
 import { BaseComponent } from '../base-component';
-import { Button } from '../button/button';
+import { Link } from '../link/link';
 
 export class Header extends BaseComponent {
-  constructor(router: Router) {
+  constructor() {
     super({ tagName: 'header', classNames: 'header' });
 
     const gameName = new BaseComponent({
@@ -16,13 +15,16 @@ export class Header extends BaseComponent {
 
     const buttonsContainer = new BaseComponent({ tagName: 'div', classNames: 'button-container' });
 
-    const garageButton = new Button({ textContent: 'GARAGE', classNames: 'button_garage' }, () =>
-      router.navigate(AppRoute.Garage),
+    const garageButton = new Link(
+      { textContent: 'GARAGE', classNames: 'button_garage' },
+      AppRoute.Garage,
     );
 
-    const winnersButton = new Button({ textContent: 'WINNERS', classNames: 'button_winners' }, () =>
-      router.navigate(AppRoute.Winners),
+    const winnersButton = new Link(
+      { textContent: 'WINNERS', classNames: 'button_winners' },
+      AppRoute.Winners,
     );
+
     buttonsContainer.insertChildren([garageButton, winnersButton]);
 
     this.insertChildren([gameName, buttonsContainer]);
