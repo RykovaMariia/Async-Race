@@ -52,6 +52,5 @@ export class CarsList extends BaseComponent {
     });
     const carContainer = new CarContainer({ classNames: 'car-container' }, car.id);
     this.carElements.push(carContainer);
-    this.insertChild(carContainer);
   }
 }

@@ -50,12 +50,11 @@ export class Garage extends BaseComponent {
     pageNumber.notify(pageNumber.getValue());
 
     const pageButtonContainer = new BaseComponent({ tagName: 'div', classNames: 'page-buttons' });
-    const currentPage = pageNumber.getValue();
     this.backPageButton = new Button(
       { classNames: 'button_back-page', textContent: 'back page' },
       {
         onclick: () => {
-          this.onClickBackPageButton(currentPage);
+          this.onClickBackPageButton();
         },
       },
     );
@@ -66,7 +65,7 @@ export class Garage extends BaseComponent {
       { classNames: 'button_next-page', textContent: 'next page' },
       {
         onclick: () => {
-          this.onClickNextPageButton(currentPage);
+          this.onClickNextPageButton();
         },
       },
     );
@@ -81,7 +80,8 @@ export class Garage extends BaseComponent {
     ]);
   }
 
-  private async onClickBackPageButton(currentPage: number) {
+  private async onClickBackPageButton() {
+    const currentPage = pageNumber.getValue();
     const pageCount = await this.carList.getPageCount();
     if (currentPage <= pageCount) this.nextPageButton.setDisableState(false);
     if (currentPage <= 2) this.backPageButton.setDisableState(true);
@@ -95,7 +95,8 @@ export class Garage extends BaseComponent {
     await this.carList.drawCars();
   }
 
-  private async onClickNextPageButton(currentPage: number) {
+  private async onClickNextPageButton() {
+    const currentPage = pageNumber.getValue();
     const pageCount = await this.carList.getPageCount();
     if (currentPage >= pageCount - 1) this.nextPageButton.setDisableState(true);
     if (currentPage >= 1) this.backPageButton.setDisableState(false);
