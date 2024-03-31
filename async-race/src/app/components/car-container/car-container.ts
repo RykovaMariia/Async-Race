@@ -1,12 +1,17 @@
 import './car-container.scss';
 import { Car } from '../../interfaces/car';
-import { apiGarageService } from '../../services/api-garage-service';
 import { BaseComponent, TaggedElementProps } from '../base-component';
 import { SvgContainer } from '../svg-container/svg-container';
 import { GarageForm, GarageFormValue } from '../garage-form/garage-form';
 import { Button } from '../button/button';
 import { apiEngineService } from '../../services/api-engine-service';
-import { Observable, carCount } from '../../services/observable';
+import { Observable } from '../../services/observable';
+
+interface CarContainerProps {
+  car: Car;
+  onDeleteCar: (id: number) => Promise<void>;
+  onUpdateCar: (id: number, value: GarageFormValue) => Promise<void>;
+}
 
 interface RideParam {
   velocity: number;
@@ -30,12 +35,12 @@ export class CarContainer extends BaseComponent {
 
   private isSettingsFormOpen = new Observable(false);
 
+  private id: number;
+
   // eslint-disable-next-line max-lines-per-function
-  constructor(
-    props: TaggedElementProps,
-    private id: number,
-  ) {
+  constructor(props: TaggedElementProps, carContainerProps: CarContainerProps) {
     super({ tagName: 'div', ...props });
+    this.id = carContainerProps.car.id;
 
     const settingsContainer = new BaseComponent({
       tagName: 'div',
@@ -52,19 +57,28 @@ export class CarContainer extends BaseComponent {
       }
     });
 
-    this.setCar();
+    this.setCar(carContainerProps.car);
 
     const deleteSvg = new SvgContainer('delete');
     const deleteButton = new Button(
       { classNames: 'button_delete', parentNode: deleteSvg },
-      { onclick: () => this.deleteCar() },
+      {
+        onclick: () => {
+          carContainerProps.onDeleteCar(carContainerProps.car.id);
+          this.destroy();
+        },
+      },
     );
 
     this.settingsForm = new GarageForm(
       { classNames: 'change-car-form' },
       {
         buttonName: 'change',
-        onSubmit: (value: GarageFormValue) => this.onSubmitSettingsForm(value),
+        onSubmit: (value: GarageFormValue) => {
+          carContainerProps.onUpdateCar(carContainerProps.car.id, value);
+          this.setCar(carContainerProps.car);
+          this.isSettingsFormOpen.notify(false);
+        },
       },
     );
     const settingsSvg = new SvgContainer('settings', { classNames: 'button_settings' });
@@ -99,24 +113,10 @@ export class CarContainer extends BaseComponent {
     this.insertChildren([settingsContainer, this.trackContainer]);
   }
 
-  private async setCar() {
-    const car: Car = await apiGarageService.getCar(this.id);
+  private setCar(car: Car) {
     this.carName.setTextContent(car.name);
     this.settingsForm?.setTextInputValue(car.name);
     this.carSvg.setSvgColor(car.color);
-  }
-
-  private async deleteCar() {
-    await apiGarageService.deleteCar(this.id);
-    carCount.notify((count) => count - 1);
-    this.destroy();
-  }
-
-  private async onSubmitSettingsForm(value: GarageFormValue) {
-    await apiGarageService.updateCar(this.id, { name: value.carName, color: value.carColor });
-    this.carName.setTextContent(value.carName);
-    this.carSvg.setSvgColor(value.carColor);
-    this.isSettingsFormOpen.notify(false);
   }
 
   async driveCar() {

@@ -4,12 +4,12 @@ import { GarageForm, GarageFormValue } from '../../components/garage-form/garage
 import { Car } from '../../interfaces/car';
 import { apiGarageService } from '../../services/api-garage-service';
 import { CarsList } from './cars-list/cars-list';
-import { carCount, pageNumber } from '../../services/observable';
 import { Button } from '../../components/button/button';
+import { garageService } from '../../services/garage-service';
 
 async function addCarCount() {
   const cars: Car[] = await apiGarageService.getCars();
-  carCount.notify(cars.length);
+  garageService.carCount.notify(cars.length);
 }
 
 export class Garage extends BaseComponent {
@@ -47,7 +47,9 @@ export class Garage extends BaseComponent {
     });
 
     addCarCount();
-    carCount.subscribe((count) => this.garageHeading.setTextContent(`GARAGE (${count})`));
+    garageService.carCount.subscribe((count) =>
+      this.garageHeading.setTextContent(`GARAGE (${count})`),
+    );
 
     this.raceResetButton = new Button(
       { textContent: 'RACE' },
@@ -65,19 +67,19 @@ export class Garage extends BaseComponent {
         onSubmit: (value: GarageFormValue) => {
           this.carList.addNewCar(value);
           this.carList.drawCars();
-          carCount.notify((prev) => prev + 1);
+          garageService.carCount.notify((prev) => prev + 1);
         },
       },
     );
 
     const pageHeading = new BaseComponent({ tagName: 'h2' });
-    pageNumber.subscribe((page) => pageHeading.setTextContent(`Page #${page}`));
-    pageNumber.notify(pageNumber.getValue());
+    garageService.pageNumber.subscribe((page) => pageHeading.setTextContent(`Page #${page}`));
+    garageService.pageNumber.notify(garageService.pageNumber.getValue());
 
     const pageButtonContainer = new BaseComponent({ tagName: 'div', classNames: 'page-buttons' });
 
-    this.backPageButton.setDisableState(pageNumber.getValue() === 1);
-    this.backPageButton.setDisableState(pageNumber.getValue() === 1);
+    this.backPageButton.setDisableState(garageService.pageNumber.getValue() === 1);
+    this.backPageButton.setDisableState(garageService.pageNumber.getValue() === 1);
 
     pageButtonContainer.insertChildren([this.backPageButton, this.nextPageButton]);
 
@@ -92,11 +94,11 @@ export class Garage extends BaseComponent {
   }
 
   private async onClickBackPageButton() {
-    const currentPage = pageNumber.getValue();
+    const currentPage = garageService.pageNumber.getValue();
     const pageCount = await this.carList.getPageCount();
     if (currentPage <= pageCount) this.nextPageButton.setDisableState(false);
     if (currentPage <= 2) this.backPageButton.setDisableState(true);
-    pageNumber.notify((prev) => {
+    garageService.pageNumber.notify((prev) => {
       if (prev > 1) {
         return prev - 1;
       }
@@ -107,11 +109,11 @@ export class Garage extends BaseComponent {
   }
 
   private async onClickNextPageButton() {
-    const currentPage = pageNumber.getValue();
+    const currentPage = garageService.pageNumber.getValue();
     const pageCount = await this.carList.getPageCount();
     if (currentPage >= pageCount - 1) this.nextPageButton.setDisableState(true);
     if (currentPage >= 1) this.backPageButton.setDisableState(false);
-    pageNumber.notify((prev) => {
+    garageService.pageNumber.notify((prev) => {
       if (prev < pageCount) {
         return prev + 1;
       }

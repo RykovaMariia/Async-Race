@@ -4,14 +4,23 @@ import { CarContainer } from '../../../components/car-container/car-container';
 import { GarageFormValue } from '../../../components/garage-form/garage-form';
 import { Car } from '../../../interfaces/car';
 import { apiGarageService } from '../../../services/api-garage-service';
-import { pageNumber } from '../../../services/observable';
+import { garageService } from '../../../services/garage-service';
 
 function filterForPage(cars: CarContainer[]) {
-  const currentPage = pageNumber.getValue();
+  const currentPage = garageService.pageNumber.getValue();
   const pageElements = cars.filter(
     (_, index) => index >= (currentPage - 1) * 7 && index + 1 <= currentPage * 7,
   );
   return pageElements;
+}
+
+async function onDeleteCar(id: number) {
+  await apiGarageService.deleteCar(id);
+  garageService.carCount.notify((count) => count - 1);
+}
+
+async function onUpdateCar(id: number, value: GarageFormValue) {
+  await apiGarageService.updateCar(id, { name: value.carName, color: value.carColor });
 }
 
 export class CarsList extends BaseComponent {
@@ -32,7 +41,7 @@ export class CarsList extends BaseComponent {
   private async addAllCars() {
     const cars: Car[] = await apiGarageService.getCars();
     const carContainers = cars.map((car) => {
-      return new CarContainer({ classNames: 'car-container' }, car.id);
+      return new CarContainer({ classNames: 'car-container' }, { car, onDeleteCar, onUpdateCar });
     });
     this.pageCount = Math.ceil(cars.length / 7);
     this.carElements = [];
@@ -57,7 +66,10 @@ export class CarsList extends BaseComponent {
       carName: value.carName,
       carColor: value.carColor,
     });
-    const carContainer = new CarContainer({ classNames: 'car-container' }, car.id);
+    const carContainer = new CarContainer(
+      { classNames: 'car-container' },
+      { car, onDeleteCar, onUpdateCar },
+    );
     this.carElements.push(carContainer);
   }
 

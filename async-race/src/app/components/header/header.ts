@@ -2,9 +2,11 @@ import './header.scss';
 import { AppRoute } from '../../enums/app-route';
 import { BaseComponent } from '../base-component';
 import { Link } from '../link/link';
-import { isGaragePageOpen } from '../../services/observable';
+import { Observable } from '../../services/observable';
 
 export class Header extends BaseComponent {
+  private isGaragePageOpen = new Observable<boolean>(true);
+
   constructor() {
     super({ tagName: 'header', classNames: 'header' });
 
@@ -22,16 +24,16 @@ export class Header extends BaseComponent {
     );
     garageButton.setDisableState(true);
 
-    garageButton.setOnClick(() => isGaragePageOpen.notify(true));
+    garageButton.setOnClick(() => this.isGaragePageOpen.notify(true));
 
     const winnersButton = new Link(
       { textContent: 'WINNERS', classNames: 'button_winners' },
       AppRoute.Winners,
     );
 
-    winnersButton.setOnClick(() => isGaragePageOpen.notify(false));
+    winnersButton.setOnClick(() => this.isGaragePageOpen.notify(false));
 
-    isGaragePageOpen.subscribe((isOpen) => {
+    this.isGaragePageOpen.subscribe((isOpen) => {
       garageButton.setDisableState(isOpen);
       winnersButton.setDisableState(!isOpen);
     });
