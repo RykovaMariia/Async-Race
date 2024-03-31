@@ -13,33 +13,6 @@
   gap: 10px;
 }
 
-.button_delete,
-.button_settings {
-  position: relative;
-  cursor: pointer;
-  background-color: constants.$color-background-body;
-  box-shadow: none;
-  transform: none;
-  padding: 0;
-
-  &::before {
-    height: 0;
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
-    fill: constants.$color-text-light;
-    transition: 0.5s ease-in-out;
-  }
-
-  &:hover {
-    svg {
-      fill: constants.$color-button-dark;
-    }
-  }
-}
-
 .change-car-form {
   position: absolute;
   left: 200px;
@@ -65,32 +38,6 @@
   align-items: center;
   gap: 10px;
   padding-left: 10px;
-}
-
-.button_power,
-.button_stop {
-  cursor: pointer;
-  background-color: constants.$color-background-body;
-  box-shadow: none;
-  transform: none;
-  padding: 0;
-
-  &::before {
-    height: 0;
-  }
-
-  svg {
-    width: 25px;
-    height: 25px;
-    fill: constants.$color-text-light;
-    transition: 0.5s ease-in-out;
-  }
-
-  &:hover {
-    svg {
-      fill: constants.$color-button-light;
-    }
-  }
 }
 
 .car-icon {

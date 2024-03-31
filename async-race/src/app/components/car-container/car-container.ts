@@ -23,6 +23,8 @@ function easeInOut(time: number) {
 }
 
 export class CarContainer extends BaseComponent {
+  private id: number;
+
   private carName = new BaseComponent({ tagName: 'h3' });
 
   private carSvg = new SvgContainer('car', { classNames: 'car-icon' });
@@ -35,7 +37,9 @@ export class CarContainer extends BaseComponent {
 
   private isSettingsFormOpen = new Observable(false);
 
-  private id: number;
+  private settingsButton: Button;
+
+  private deleteButton: Button;
 
   // eslint-disable-next-line max-lines-per-function
   constructor(props: TaggedElementProps, carContainerProps: CarContainerProps) {
@@ -58,7 +62,7 @@ export class CarContainer extends BaseComponent {
     });
 
     const deleteSvg = new SvgContainer('delete');
-    const deleteButton = new Button(
+    this.deleteButton = new Button(
       { classNames: 'button_delete', parentNode: deleteSvg },
       {
         onclick: () => {
@@ -80,7 +84,7 @@ export class CarContainer extends BaseComponent {
       },
     );
     const settingsSvg = new SvgContainer('settings', { classNames: 'button_settings' });
-    const settingsButton = new Button(
+    this.settingsButton = new Button(
       { classNames: 'button_settings', parentNode: settingsSvg },
       {
         onclick: () => {
@@ -91,7 +95,7 @@ export class CarContainer extends BaseComponent {
 
     this.setCar(carContainerProps.car);
 
-    settingsContainer.insertChildren([settingsButton, deleteButton, this.carName]);
+    settingsContainer.insertChildren([this.settingsButton, this.deleteButton, this.carName]);
 
     const powerSvg = new SvgContainer('power');
     const powerButton = new Button({ classNames: 'button_power', parentNode: powerSvg });
@@ -113,6 +117,10 @@ export class CarContainer extends BaseComponent {
     this.insertChildren([settingsContainer, this.trackContainer]);
   }
 
+  private setDisableStateSettingsButtons(state: boolean) {
+    [this.settingsButton, this.deleteButton].map((button) => button.setDisableState(state));
+  }
+
   private setCar(car: Car) {
     this.carName.setTextContent(car.name);
     this.carSvg.setSvgColor(car.color);
@@ -121,6 +129,7 @@ export class CarContainer extends BaseComponent {
   }
 
   async driveCar() {
+    this.setDisableStateSettingsButtons(true);
     const rideParam: RideParam = await apiEngineService.starCarsEngine(this.id);
     const animationTime = rideParam.distance / rideParam.velocity;
 
@@ -142,16 +151,12 @@ export class CarContainer extends BaseComponent {
 
   private startAnimation = (duration: number, callback: FrameRequestCallback) => {
     let startAnimation: number = 0;
-
     const measure = (time: number) => {
       if (!startAnimation) {
         startAnimation = time;
       }
-
       const progress = (time - startAnimation) / duration;
-
       callback(progress);
-
       if (progress < 1) {
         this.requestAnimationFrameId = requestAnimationFrame(measure);
       }
@@ -160,6 +165,7 @@ export class CarContainer extends BaseComponent {
   };
 
   async resetCar() {
+    this.setDisableStateSettingsButtons(false);
     const rideParam: RideParam = await apiEngineService.stopCarsEngine(this.id);
     if (rideParam.velocity === 0) {
       cancelAnimationFrame(this.requestAnimationFrameId);

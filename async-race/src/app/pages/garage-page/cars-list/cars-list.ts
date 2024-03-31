@@ -6,10 +6,14 @@ import { Car } from '../../../interfaces/car';
 import { apiGarageService } from '../../../services/api-garage-service';
 import { garageService } from '../../../services/garage-service';
 
+const MAX_CARS_COUNT_IN_PAGE = 7;
+
 function filterForPage(cars: CarContainer[]) {
   const currentPage = garageService.pageNumber.getValue();
   const pageElements = cars.filter(
-    (_, index) => index >= (currentPage - 1) * 7 && index + 1 <= currentPage * 7,
+    (_, index) =>
+      index >= (currentPage - 1) * MAX_CARS_COUNT_IN_PAGE &&
+      index + 1 <= currentPage * MAX_CARS_COUNT_IN_PAGE,
   );
   return pageElements;
 }
@@ -20,8 +24,6 @@ async function onUpdateCar(id: number, value: GarageFormValue) {
 
 export class CarsList extends BaseComponent {
   private carElements: CarContainer[] = [];
-
-  private pageCount: number = 1;
 
   private pageElements: CarContainer[] = [];
 
@@ -41,9 +43,9 @@ export class CarsList extends BaseComponent {
         { car, onDeleteCar: (id: number) => this.onDeleteCar(id), onUpdateCar },
       );
     });
-    this.pageCount = Math.ceil(cars.length / 7);
     this.carElements = [];
     this.carElements.push(...carContainers);
+    garageService.pageCount.notify(() => Math.ceil(cars.length / MAX_CARS_COUNT_IN_PAGE));
   }
 
   async drawCars() {
@@ -52,11 +54,6 @@ export class CarsList extends BaseComponent {
 
     this.element.innerHTML = '';
     this.insertChildren([...this.pageElements]);
-  }
-
-  async getPageCount() {
-    await this.addAllCars();
-    return this.pageCount;
   }
 
   async addNewCar(value: GarageFormValue) {
@@ -69,8 +66,12 @@ export class CarsList extends BaseComponent {
       { car, onDeleteCar: (id: number) => this.onDeleteCar(id), onUpdateCar },
     );
     this.carElements.push(carContainer);
-
-    await this.drawCars();
+    if (
+      garageService.pageNumber.getValue() === garageService.pageCount.getValue() &&
+      this.carElements.length % MAX_CARS_COUNT_IN_PAGE === 0
+    ) {
+      await this.drawCars();
+    }
   }
 
   async onDeleteCar(id: number) {

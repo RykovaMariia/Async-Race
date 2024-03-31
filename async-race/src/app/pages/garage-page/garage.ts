@@ -1,11 +1,12 @@
 import './garage.scss';
 import { BaseComponent } from '../../components/base-component';
-import { GarageForm, GarageFormValue } from '../../components/garage-form/garage-form';
-import { Car } from '../../interfaces/car';
-import { apiGarageService } from '../../services/api-garage-service';
 import { CarsList } from './cars-list/cars-list';
 import { Button } from '../../components/button/button';
 import { garageService } from '../../services/garage-service';
+import { GarageSettings } from './garage-settings/garage-settings';
+import { GarageFormValue } from '../../components/garage-form/garage-form';
+import { Car } from '../../interfaces/car';
+import { apiGarageService } from '../../services/api-garage-service';
 
 async function addCarCount() {
   const cars: Car[] = await apiGarageService.getCars();
@@ -33,78 +34,55 @@ export class Garage extends BaseComponent {
     },
   );
 
-  private isRaceButton = true;
-
-  private raceResetButton: Button;
-
   private carList: CarsList;
 
-  // eslint-disable-next-line max-lines-per-function
   constructor() {
     super({
       tagName: 'main',
       classNames: 'garage',
     });
-
     addCarCount();
+
     garageService.carCount.subscribe((count) => {
       this.garageHeading.setTextContent(`GARAGE (${count})`);
-      this.disablePageButtons();
+      this.backPageButton.setDisableState(garageService.pageNumber.getValue() === 1);
+      garageService.pageCount.subscribe((pageCount) =>
+        this.nextPageButton.setDisableState(garageService.pageNumber.getValue() === pageCount),
+      );
     });
-
-    this.raceResetButton = new Button(
-      { textContent: 'RACE' },
-      {
-        onclick: () => {
-          this.onClickRaceResetButton();
-        },
-      },
-    );
-
-    const createCarForm = new GarageForm(
-      { classNames: 'create-car-form' },
-      {
-        buttonName: 'create',
-        onSubmit: (value: GarageFormValue) => {
-          this.carList.addNewCar(value);
-          this.carList.drawCars();
-          garageService.carCount.notify((prev) => prev + 1);
-        },
-      },
-    );
 
     const pageHeading = new BaseComponent({ tagName: 'h2' });
     garageService.pageNumber.subscribe((page) => {
       pageHeading.setTextContent(`Page #${page}`);
-      this.disablePageButtons();
     });
     garageService.pageNumber.notify(garageService.pageNumber.getValue());
 
     this.carList = new CarsList();
+    const garageButtons = new GarageSettings({
+      onCreateCar: (value) => this.onSubmitCreateButton(value),
+      onRaceCars: () => this.carList.raceCars(),
+      onResetCars: () => this.carList.resetCars(),
+    });
 
     const pageButtonContainer = new BaseComponent({ tagName: 'div', classNames: 'page-buttons' });
     pageButtonContainer.insertChildren([this.backPageButton, this.nextPageButton]);
 
-    this.disablePageButtons();
     this.insertChildren([
-      createCarForm,
       this.garageHeading,
-      this.raceResetButton,
+      garageButtons,
       pageHeading,
       this.carList,
       pageButtonContainer,
     ]);
   }
 
-  private async disablePageButtons() {
-    this.backPageButton.setDisableState(garageService.pageNumber.getValue() === 1);
-    const pageCount = await this.carList.getPageCount();
-    this.nextPageButton.setDisableState(garageService.pageNumber.getValue() === pageCount);
+  async onSubmitCreateButton(value: GarageFormValue) {
+    await this.carList.addNewCar(value);
   }
 
   private async onClickBackPageButton() {
     const currentPage = garageService.pageNumber.getValue();
-    const pageCount = await this.carList.getPageCount();
+    const pageCount = garageService.pageCount.getValue();
     if (currentPage <= pageCount) this.nextPageButton.setDisableState(false);
     if (currentPage <= 2) this.backPageButton.setDisableState(true);
     garageService.pageNumber.notify((prev) => {
@@ -119,7 +97,7 @@ export class Garage extends BaseComponent {
 
   private async onClickNextPageButton() {
     const currentPage = garageService.pageNumber.getValue();
-    const pageCount = await this.carList.getPageCount();
+    const pageCount = garageService.pageCount.getValue();
     if (currentPage >= pageCount - 1) this.nextPageButton.setDisableState(true);
     if (currentPage >= 1) this.backPageButton.setDisableState(false);
     garageService.pageNumber.notify((prev) => {
@@ -130,17 +108,5 @@ export class Garage extends BaseComponent {
     });
 
     await this.carList.drawCars();
-  }
-
-  private async onClickRaceResetButton() {
-    if (this.isRaceButton) {
-      this.carList.raceCars();
-      this.raceResetButton.setTextContent('RESET');
-      this.isRaceButton = false;
-    } else {
-      this.carList.resetCars();
-      this.raceResetButton.setTextContent('RICE');
-      this.isRaceButton = true;
-    }
   }
 }
