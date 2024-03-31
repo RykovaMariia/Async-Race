@@ -31,7 +31,10 @@ export class CarContainer extends BaseComponent {
   private isSettingsFormOpen = new Observable(false);
 
   // eslint-disable-next-line max-lines-per-function
-  constructor(props: TaggedElementProps, id: number) {
+  constructor(
+    props: TaggedElementProps,
+    private id: number,
+  ) {
     super({ tagName: 'div', ...props });
 
     const settingsContainer = new BaseComponent({
@@ -49,19 +52,19 @@ export class CarContainer extends BaseComponent {
       }
     });
 
-    this.setCar(id);
+    this.setCar();
 
     const deleteSvg = new SvgContainer('delete');
     const deleteButton = new Button(
       { classNames: 'button_delete', parentNode: deleteSvg },
-      { onclick: () => this.deleteCar(id) },
+      { onclick: () => this.deleteCar() },
     );
 
     this.settingsForm = new GarageForm(
       { classNames: 'change-car-form' },
       {
         buttonName: 'change',
-        onSubmit: (value: GarageFormValue) => this.onSubmitSettingsForm(id, value),
+        onSubmit: (value: GarageFormValue) => this.onSubmitSettingsForm(value),
       },
     );
     const settingsSvg = new SvgContainer('settings', { classNames: 'button_settings' });
@@ -81,11 +84,11 @@ export class CarContainer extends BaseComponent {
     const stopSvg = new SvgContainer('stop');
     const stopButton = new Button({ classNames: 'button_stop', parentNode: stopSvg });
     powerButton.setOnClick(() => {
-      this.driveCarAnimation(id);
+      this.driveCar();
       powerButton.toggleButton(stopButton);
     });
     stopButton.setOnClick(() => {
-      this.stopAnimation(id);
+      this.resetCar();
       stopButton.toggleButton(powerButton);
     });
 
@@ -96,35 +99,36 @@ export class CarContainer extends BaseComponent {
     this.insertChildren([settingsContainer, this.trackContainer]);
   }
 
-  private async setCar(id: number) {
-    const car: Car = await apiGarageService.getCar(id);
+  private async setCar() {
+    const car: Car = await apiGarageService.getCar(this.id);
     this.carName.setTextContent(car.name);
     this.settingsForm?.setTextInputValue(car.name);
     this.carSvg.setSvgColor(car.color);
   }
 
-  private async deleteCar(id: number) {
-    await apiGarageService.deleteCar(id);
+  private async deleteCar() {
+    await apiGarageService.deleteCar(this.id);
     carCount.notify((count) => count - 1);
     this.destroy();
   }
 
-  private async onSubmitSettingsForm(id: number, value: GarageFormValue) {
-    await apiGarageService.updateCar(id, { name: value.carName, color: value.carColor });
+  private async onSubmitSettingsForm(value: GarageFormValue) {
+    await apiGarageService.updateCar(this.id, { name: value.carName, color: value.carColor });
     this.carName.setTextContent(value.carName);
     this.carSvg.setSvgColor(value.carColor);
     this.isSettingsFormOpen.notify(false);
   }
 
-  private async driveCarAnimation(id: number) {
-    const rideParam: RideParam = await apiEngineService.starCarsEngine(id);
+  async driveCar() {
+    const rideParam: RideParam = await apiEngineService.starCarsEngine(this.id);
     const animationTime = rideParam.distance / rideParam.velocity;
-    this.startDrive(animationTime, (progress) => {
+
+    this.startAnimation(animationTime, (progress) => {
       const distance = document.body.clientWidth - 220;
       const translateX = easeInOut(progress) * distance;
       this.carSvg.setTransform({ translateX });
     });
-    this.driveResponse(id);
+    this.driveResponse(this.id);
   }
 
   private driveResponse = async (id: number) => {
@@ -135,7 +139,7 @@ export class CarContainer extends BaseComponent {
     }
   };
 
-  private startDrive = (duration: number, callback: FrameRequestCallback) => {
+  private startAnimation = (duration: number, callback: FrameRequestCallback) => {
     let startAnimation: number = 0;
 
     const measure = (time: number) => {
@@ -154,8 +158,8 @@ export class CarContainer extends BaseComponent {
     this.requestAnimationFrameId = requestAnimationFrame(measure);
   };
 
-  private async stopAnimation(id: number) {
-    const rideParam: RideParam = await apiEngineService.stopCarsEngine(id);
+  async resetCar() {
+    const rideParam: RideParam = await apiEngineService.stopCarsEngine(this.id);
     if (rideParam.velocity === 0) {
       cancelAnimationFrame(this.requestAnimationFrameId);
       this.carSvg.setTransform({ translateX: 0 });

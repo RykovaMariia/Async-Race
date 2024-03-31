@@ -6,10 +6,20 @@ import { Car } from '../../../interfaces/car';
 import { apiGarageService } from '../../../services/api-garage-service';
 import { pageNumber } from '../../../services/observable';
 
+function filterForPage(cars: CarContainer[]) {
+  const currentPage = pageNumber.getValue();
+  const pageElements = cars.filter(
+    (_, index) => index >= (currentPage - 1) * 7 && index + 1 <= currentPage * 7,
+  );
+  return pageElements;
+}
+
 export class CarsList extends BaseComponent {
   private carElements: CarContainer[] = [];
 
   private pageCount: number = 1;
+
+  private pageElements: CarContainer[] = [];
 
   constructor() {
     super({
@@ -31,13 +41,10 @@ export class CarsList extends BaseComponent {
 
   async drawCars() {
     await this.addAllCars();
-    const currentPage = pageNumber.getValue();
-    const pageElements = this.carElements.filter(
-      (_, index) => index >= (currentPage - 1) * 7 && index + 1 <= currentPage * 7,
-    );
+    this.pageElements = filterForPage(this.carElements);
 
     this.element.innerHTML = '';
-    this.insertChildren([...pageElements]);
+    this.insertChildren([...this.pageElements]);
   }
 
   async getPageCount() {
@@ -52,5 +59,13 @@ export class CarsList extends BaseComponent {
     });
     const carContainer = new CarContainer({ classNames: 'car-container' }, car.id);
     this.carElements.push(carContainer);
+  }
+
+  async raceCars() {
+    this.pageElements.map((car) => car.driveCar());
+  }
+
+  async resetCars() {
+    this.pageElements.map((car) => car.resetCar());
   }
 }

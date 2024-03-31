@@ -13,13 +13,31 @@ async function addCarCount() {
 }
 
 export class Garage extends BaseComponent {
-  private garageHeading: BaseComponent<HTMLElement>;
+  private garageHeading = new BaseComponent({ tagName: 'h2', classNames: 'garage-heading' });
 
-  private carList: CarsList;
+  private carList = new CarsList();
 
-  private backPageButton: Button;
+  private backPageButton = new Button(
+    { textContent: 'back page' },
+    {
+      onclick: () => {
+        this.onClickBackPageButton();
+      },
+    },
+  );
 
-  private nextPageButton: Button;
+  private nextPageButton = new Button(
+    { textContent: 'next page' },
+    {
+      onclick: () => {
+        this.onClickNextPageButton();
+      },
+    },
+  );
+
+  private isRaceButton = true;
+
+  private raceResetButton: Button;
 
   // eslint-disable-next-line max-lines-per-function
   constructor() {
@@ -28,11 +46,17 @@ export class Garage extends BaseComponent {
       classNames: 'garage',
     });
 
-    this.garageHeading = new BaseComponent({ tagName: 'h2', classNames: 'garage-heading' });
     addCarCount();
     carCount.subscribe((count) => this.garageHeading.setTextContent(`GARAGE (${count})`));
 
-    this.carList = new CarsList();
+    this.raceResetButton = new Button(
+      { textContent: 'RACE' },
+      {
+        onclick: () => {
+          this.onClickRaceResetButton();
+        },
+      },
+    );
 
     const createCarForm = new GarageForm(
       { classNames: 'create-car-form' },
@@ -40,6 +64,7 @@ export class Garage extends BaseComponent {
         buttonName: 'create',
         onSubmit: (value: GarageFormValue) => {
           this.carList.addNewCar(value);
+          this.carList.drawCars();
           carCount.notify((prev) => prev + 1);
         },
       },
@@ -50,30 +75,16 @@ export class Garage extends BaseComponent {
     pageNumber.notify(pageNumber.getValue());
 
     const pageButtonContainer = new BaseComponent({ tagName: 'div', classNames: 'page-buttons' });
-    this.backPageButton = new Button(
-      { classNames: 'button_back-page', textContent: 'back page' },
-      {
-        onclick: () => {
-          this.onClickBackPageButton();
-        },
-      },
-    );
 
     this.backPageButton.setDisableState(pageNumber.getValue() === 1);
+    this.backPageButton.setDisableState(pageNumber.getValue() === 1);
 
-    this.nextPageButton = new Button(
-      { classNames: 'button_next-page', textContent: 'next page' },
-      {
-        onclick: () => {
-          this.onClickNextPageButton();
-        },
-      },
-    );
     pageButtonContainer.insertChildren([this.backPageButton, this.nextPageButton]);
 
     this.insertChildren([
       createCarForm,
       this.garageHeading,
+      this.raceResetButton,
       pageHeading,
       this.carList,
       pageButtonContainer,
@@ -108,5 +119,17 @@ export class Garage extends BaseComponent {
     });
 
     await this.carList.drawCars();
+  }
+
+  private async onClickRaceResetButton() {
+    if (this.isRaceButton) {
+      this.carList.raceCars();
+      this.raceResetButton.setTextContent('RESET');
+      this.isRaceButton = false;
+    } else {
+      this.carList.resetCars();
+      this.raceResetButton.setTextContent('RICE');
+      this.isRaceButton = true;
+    }
   }
 }

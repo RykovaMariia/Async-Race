@@ -66,26 +66,6 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
     }
   }
 
-  setTransform({
-    translateX,
-    translateY,
-    translateZ,
-  }: {
-    translateX?: number;
-    translateY?: number;
-    translateZ?: number;
-  }) {
-    if (translateX || translateX === 0) {
-      this.element.style.transform = `translateX(${translateX}px)`;
-    }
-    if (translateY || translateX === 0) {
-      this.element.style.transform = `translateX(${translateY}px)`;
-    }
-    if (translateZ || translateX === 0) {
-      this.element.style.transform = `translateX(${translateZ}px)`;
-    }
-  }
-
   isContainsChild(child: HTMLElement | BaseComponent) {
     if (child instanceof HTMLElement) {
       return this.element.contains(child);

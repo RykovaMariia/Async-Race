@@ -1,6 +1,8 @@
 @use '../../../styles/constants.scss';
 
-button {
+.button {
+  width: max-content;
+  user-select: none;
   box-sizing: border-box;
   background-color: constants.$color-text-light;
   color: constants.$color-text-dark;
@@ -20,12 +22,12 @@ button {
   }
 
   &:disabled {
-    color: constants.$color-text-light;
-    cursor: auto;
+    pointer-events: none;
+    color: constants.$color-text-disabled;
   }
 }
 
-button::before {
+.button::before {
   content: '';
   width: 0;
   height: 100%;
@@ -42,8 +44,9 @@ button::before {
   z-index: -1;
 }
 
-button:hover::before,
-button:disabled::before {
+.button:hover::before,
+.button_garage:disabled::before,
+.button_winners:disabled::before {
   width: 100%;
 }
 
@@ -58,4 +61,5 @@ button:disabled::before {
 .button_garage:disabled,
 .button_winners:disabled {
   padding: 5px 10px;
+  color: constants.$color-text-light;
 }

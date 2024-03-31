@@ -23,4 +23,25 @@ export class SvgContainer extends BaseComponent {
   setSvgColor(color: string) {
     this.svg.style.fill = color;
   }
+
+  setTransform({
+    translateX,
+    translateY,
+    translateZ,
+  }: {
+    translateX?: number;
+    translateY?: number;
+    translateZ?: number;
+  }) {
+    if (translateX || translateX === 0) {
+      this.element.style.transform = `translateX(${translateX}px)`;
+    }
+    if (translateY || translateX === 0) {
+      this.element.style.transform = `translateX(${translateY}px)`;
+    }
+    if (translateZ || translateX === 0) {
+      this.element.style.transform = `translateX(${translateZ}px)`;
+    }
+    // console.log('%o %o %o', translateX, translateY, translateZ);
+  }
 }
