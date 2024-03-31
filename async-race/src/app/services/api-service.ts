@@ -4,7 +4,7 @@ interface Options {
   body?: object;
 }
 
-export type ApiPath = 'garage' | 'engine';
+export type ApiPath = 'garage' | 'engine' | 'winners';
 
 export const API_URL = 'http://127.0.0.1:3000';
 
