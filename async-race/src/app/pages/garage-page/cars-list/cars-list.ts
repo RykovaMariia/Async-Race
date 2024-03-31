@@ -14,11 +14,6 @@ function filterForPage(cars: CarContainer[]) {
   return pageElements;
 }
 
-async function onDeleteCar(id: number) {
-  await apiGarageService.deleteCar(id);
-  garageService.carCount.notify((count) => count - 1);
-}
-
 async function onUpdateCar(id: number, value: GarageFormValue) {
   await apiGarageService.updateCar(id, { name: value.carName, color: value.carColor });
 }
@@ -41,7 +36,10 @@ export class CarsList extends BaseComponent {
   private async addAllCars() {
     const cars: Car[] = await apiGarageService.getCars();
     const carContainers = cars.map((car) => {
-      return new CarContainer({ classNames: 'car-container' }, { car, onDeleteCar, onUpdateCar });
+      return new CarContainer(
+        { classNames: 'car-container' },
+        { car, onDeleteCar: (id: number) => this.onDeleteCar(id), onUpdateCar },
+      );
     });
     this.pageCount = Math.ceil(cars.length / 7);
     this.carElements = [];
@@ -68,9 +66,17 @@ export class CarsList extends BaseComponent {
     });
     const carContainer = new CarContainer(
       { classNames: 'car-container' },
-      { car, onDeleteCar, onUpdateCar },
+      { car, onDeleteCar: (id: number) => this.onDeleteCar(id), onUpdateCar },
     );
     this.carElements.push(carContainer);
+
+    await this.drawCars();
+  }
+
+  async onDeleteCar(id: number) {
+    await apiGarageService.deleteCar(id);
+    garageService.carCount.notify((count) => count - 1);
+    await this.drawCars();
   }
 
   async raceCars() {

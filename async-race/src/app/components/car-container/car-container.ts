@@ -57,15 +57,13 @@ export class CarContainer extends BaseComponent {
       }
     });
 
-    this.setCar(carContainerProps.car);
-
     const deleteSvg = new SvgContainer('delete');
     const deleteButton = new Button(
       { classNames: 'button_delete', parentNode: deleteSvg },
       {
         onclick: () => {
-          carContainerProps.onDeleteCar(carContainerProps.car.id);
           this.destroy();
+          carContainerProps.onDeleteCar(carContainerProps.car.id);
         },
       },
     );
@@ -76,7 +74,7 @@ export class CarContainer extends BaseComponent {
         buttonName: 'change',
         onSubmit: (value: GarageFormValue) => {
           carContainerProps.onUpdateCar(carContainerProps.car.id, value);
-          this.setCar(carContainerProps.car);
+          this.setCar({ name: value.carName, color: value.carColor, id: carContainerProps.car.id });
           this.isSettingsFormOpen.notify(false);
         },
       },
@@ -90,6 +88,8 @@ export class CarContainer extends BaseComponent {
         },
       },
     );
+
+    this.setCar(carContainerProps.car);
 
     settingsContainer.insertChildren([settingsButton, deleteButton, this.carName]);
 
@@ -115,8 +115,9 @@ export class CarContainer extends BaseComponent {
 
   private setCar(car: Car) {
     this.carName.setTextContent(car.name);
-    this.settingsForm?.setTextInputValue(car.name);
     this.carSvg.setSvgColor(car.color);
+    this.settingsForm?.setTextInputValue(car.name);
+    this.settingsForm?.setColorInputValue(car.color);
   }
 
   async driveCar() {
