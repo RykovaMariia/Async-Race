@@ -1,6 +1,6 @@
 import { BaseComponent, TaggedElementProps } from '../base-component';
 
-export type SvgId = 'car' | 'flag' | 'delete' | 'settings' | 'power' | 'stop';
+export type SvgId = 'car' | 'flag' | 'delete' | 'settings' | 'power' | 'stop' | 'close';
 
 const URL_SPRITE = './assets/sprite.svg';
 

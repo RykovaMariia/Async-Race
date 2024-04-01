@@ -36,7 +36,7 @@ export class GarageSettings extends BaseComponent {
         onclick: () => {
           for (let i = 0; i < 100; i += 1) {
             this.carListCallBacks.onCreateCar(getRandomCar());
-            garageService.carCount.notify((prev) => prev + 1);
+            garageService.addCarCount(1);
           }
         },
       },
@@ -48,7 +48,7 @@ export class GarageSettings extends BaseComponent {
         buttonName: 'create',
         onSubmit: (value: GarageFormValue) => {
           this.carListCallBacks.onCreateCar(value);
-          garageService.carCount.notify((prev) => prev + 1);
+          garageService.addCarCount(1);
         },
       },
     );

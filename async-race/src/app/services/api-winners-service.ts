@@ -1,8 +1,15 @@
 import { ApiService } from './api-service';
 
+export type Sort = 'id' | 'time' | 'wins';
+export type Order = 'desc' | 'asc';
+
 class ApiWinnersService extends ApiService {
-  getWinners() {
-    return this.request('', { method: 'GET' });
+  getWinners(page: number) {
+    return this.request(`?_page=${page}&limit=10`, { method: 'GET' });
+  }
+
+  getSortingWinners({ page, sort, order }: { page: number; sort: Sort; order: Order }) {
+    return this.request(`?_page=${page}&limit=10&sort=${sort}&order=${order}`, { method: 'GET' });
   }
 
   getWinner(id: number) {

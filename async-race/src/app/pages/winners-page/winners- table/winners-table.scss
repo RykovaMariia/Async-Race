@@ -1,0 +1,25 @@
+@use '../../../../styles/constants.scss';
+
+.winners-table {
+  margin: auto;
+  border-radius: 5px;
+  font-size: 2rem;
+  width: 800px;
+  border-collapse: collapse;
+  white-space: nowrap;
+
+  svg {
+    width: 50px;
+    height: 40px;
+  }
+
+  td,
+  th {
+    text-align: center;
+    padding: 8px;
+  }
+
+  th {
+    background-color: constants.$color-track;
+  }
+}

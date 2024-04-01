@@ -6,11 +6,12 @@ import { Car } from '../../../interfaces/car';
 import { apiGarageService } from '../../../services/api-garage-service';
 import { garageService } from '../../../services/garage-service';
 import { apiWinnersService } from '../../../services/api-winners-service';
+import { WinnerModal } from '../../../components/winner-modal/winner-modal';
 
 const MAX_CARS_COUNT_IN_PAGE = 7;
 
 function filterForPage(cars: CarContainer[]) {
-  const currentPage = garageService.pageNumber.getValue();
+  const currentPage = garageService.getPageNumber();
   const pageElements = cars.filter(
     (_, index) =>
       index >= (currentPage - 1) * MAX_CARS_COUNT_IN_PAGE &&
@@ -59,7 +60,7 @@ export class CarsList extends BaseComponent {
     });
     this.carElements = [];
     this.carElements.push(...carContainers);
-    garageService.pageCount.notify(() => Math.ceil(cars.length / MAX_CARS_COUNT_IN_PAGE));
+    garageService.updatePageCount(Math.ceil(cars.length / MAX_CARS_COUNT_IN_PAGE));
   }
 
   async drawCars() {
@@ -81,7 +82,7 @@ export class CarsList extends BaseComponent {
     );
     this.carElements.push(carContainer);
     if (
-      garageService.pageNumber.getValue() === garageService.pageCount.getValue() &&
+      garageService.getPageNumber() === garageService.getPageCount() &&
       this.carElements.length % MAX_CARS_COUNT_IN_PAGE === 0
     ) {
       await this.drawCars();
@@ -90,13 +91,18 @@ export class CarsList extends BaseComponent {
 
   async onDeleteCar(id: number) {
     await apiGarageService.deleteCar(id);
-    garageService.carCount.notify((count) => count - 1);
+    garageService.addCarCount(-1);
     await this.drawCars();
   }
 
   async raceCars() {
     Promise.race(this.pageElements.map((car) => car.driveCar()))
       .then((winnerProps) => {
+        apiGarageService.getCar(winnerProps.id).then((car) => {
+          const modal = new WinnerModal({ name: car.name, time: winnerProps.time });
+          this.insertChild(modal);
+        });
+
         createWinner(winnerProps);
       })
       .catch();

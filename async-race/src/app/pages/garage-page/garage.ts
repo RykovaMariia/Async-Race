@@ -10,7 +10,7 @@ import { apiGarageService } from '../../services/api-garage-service';
 
 async function addCarCount() {
   const cars: Car[] = await apiGarageService.getCars();
-  garageService.carCount.notify(cars.length);
+  garageService.updateCarCount(cars.length);
 }
 
 export class Garage extends BaseComponent {
@@ -43,19 +43,19 @@ export class Garage extends BaseComponent {
     });
     addCarCount();
 
-    garageService.carCount.subscribe((count) => {
+    garageService.subscribeCarCount((count) => {
       this.garageHeading.setTextContent(`GARAGE (${count})`);
-      this.backPageButton.setDisableState(garageService.pageNumber.getValue() === 1);
-      garageService.pageCount.subscribe((pageCount) =>
-        this.nextPageButton.setDisableState(garageService.pageNumber.getValue() === pageCount),
+      this.backPageButton.setDisableState(garageService.getPageNumber() === 1);
+      garageService.subscribePageCount((pageCount) =>
+        this.nextPageButton.setDisableState(garageService.getPageNumber() === pageCount),
       );
     });
 
     const pageHeading = new BaseComponent({ tagName: 'h2' });
-    garageService.pageNumber.subscribe((page) => {
+    garageService.subscribePageNumber((page) => {
       pageHeading.setTextContent(`Page #${page}`);
     });
-    garageService.pageNumber.notify(garageService.pageNumber.getValue());
+    garageService.updatePageNumber(garageService.getPageNumber());
 
     this.carList = new CarsList();
     const garageButtons = new GarageSettings({
@@ -81,31 +81,21 @@ export class Garage extends BaseComponent {
   }
 
   private async onClickBackPageButton() {
-    const currentPage = garageService.pageNumber.getValue();
-    const pageCount = garageService.pageCount.getValue();
+    const currentPage = garageService.getPageNumber();
+    const pageCount = garageService.getPageCount();
     if (currentPage <= pageCount) this.nextPageButton.setDisableState(false);
     if (currentPage <= 2) this.backPageButton.setDisableState(true);
-    garageService.pageNumber.notify((prev) => {
-      if (prev > 1) {
-        return prev - 1;
-      }
-      return prev;
-    });
+    garageService.reducePageNumber();
 
     await this.carList.drawCars();
   }
 
   private async onClickNextPageButton() {
-    const currentPage = garageService.pageNumber.getValue();
-    const pageCount = garageService.pageCount.getValue();
+    const currentPage = garageService.getPageNumber();
+    const pageCount = garageService.getPageCount();
     if (currentPage >= pageCount - 1) this.nextPageButton.setDisableState(true);
     if (currentPage >= 1) this.backPageButton.setDisableState(false);
-    garageService.pageNumber.notify((prev) => {
-      if (prev < pageCount) {
-        return prev + 1;
-      }
-      return prev;
-    });
+    garageService.increasePageNumber();
 
     await this.carList.drawCars();
   }

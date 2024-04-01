@@ -166,7 +166,7 @@ export class CarContainer extends BaseComponent {
           this.requestAnimationFrameId = requestAnimationFrame(measure);
           return;
         }
-        res({ id: this.id, time: duration });
+        res({ id: this.id, time: +(duration / 1000).toFixed(2) });
       };
       this.requestAnimationFrameId = requestAnimationFrame(measure);
     });
