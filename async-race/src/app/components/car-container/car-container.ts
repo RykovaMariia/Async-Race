@@ -18,6 +18,11 @@ interface RideParam {
   distance: number;
 }
 
+export interface WinnerProps {
+  id: number;
+  time: number;
+}
+
 function easeInOut(time: number) {
   return 0.5 * (1 - Math.cos(Math.PI * time));
 }
@@ -132,13 +137,12 @@ export class CarContainer extends BaseComponent {
     this.setDisableStateSettingsButtons(true);
     const rideParam: RideParam = await apiEngineService.starCarsEngine(this.id);
     const animationTime = rideParam.distance / rideParam.velocity;
-
-    this.startAnimation(animationTime, (progress) => {
+    this.driveResponse(this.id);
+    return this.startAnimation(animationTime, (progress) => {
       const distance = document.body.clientWidth - 220;
       const translateX = easeInOut(progress) * distance;
       this.carSvg.setTransform({ translateX });
     });
-    this.driveResponse(this.id);
   }
 
   private driveResponse = async (id: number) => {
@@ -150,18 +154,22 @@ export class CarContainer extends BaseComponent {
   };
 
   private startAnimation = (duration: number, callback: FrameRequestCallback) => {
-    let startAnimation: number = 0;
-    const measure = (time: number) => {
-      if (!startAnimation) {
-        startAnimation = time;
-      }
-      const progress = (time - startAnimation) / duration;
-      callback(progress);
-      if (progress < 1) {
-        this.requestAnimationFrameId = requestAnimationFrame(measure);
-      }
-    };
-    this.requestAnimationFrameId = requestAnimationFrame(measure);
+    return new Promise<WinnerProps>((res) => {
+      let startAnimation: number = 0;
+      const measure = (time: number) => {
+        if (!startAnimation) {
+          startAnimation = time;
+        }
+        const progress = (time - startAnimation) / duration;
+        callback(progress);
+        if (progress < 1) {
+          this.requestAnimationFrameId = requestAnimationFrame(measure);
+          return;
+        }
+        res({ id: this.id, time: duration });
+      };
+      this.requestAnimationFrameId = requestAnimationFrame(measure);
+    });
   };
 
   async resetCar() {

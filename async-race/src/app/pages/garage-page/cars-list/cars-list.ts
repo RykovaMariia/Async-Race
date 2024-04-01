@@ -1,10 +1,11 @@
 import './cars-list.scss';
 import { BaseComponent } from '../../../components/base-component';
-import { CarContainer } from '../../../components/car-container/car-container';
+import { CarContainer, WinnerProps } from '../../../components/car-container/car-container';
 import { GarageFormValue } from '../../../components/garage-form/garage-form';
 import { Car } from '../../../interfaces/car';
 import { apiGarageService } from '../../../services/api-garage-service';
 import { garageService } from '../../../services/garage-service';
+import { apiWinnersService } from '../../../services/api-winners-service';
 
 const MAX_CARS_COUNT_IN_PAGE = 7;
 
@@ -20,6 +21,19 @@ function filterForPage(cars: CarContainer[]) {
 
 async function onUpdateCar(id: number, value: GarageFormValue) {
   await apiGarageService.updateCar(id, { name: value.carName, color: value.carColor });
+}
+
+async function createWinner(winnerProps: WinnerProps) {
+  try {
+    const winner = await apiWinnersService.getWinner(winnerProps.id);
+    const { wins } = winner;
+    await apiWinnersService.updateWinner(winnerProps.id, {
+      wins: wins + 1,
+      time: Math.min(winnerProps.time, winner.time),
+    });
+  } catch {
+    await apiWinnersService.createWinner({ id: winnerProps.id, wins: 1, time: winnerProps.time });
+  }
 }
 
 export class CarsList extends BaseComponent {
@@ -81,7 +95,11 @@ export class CarsList extends BaseComponent {
   }
 
   async raceCars() {
-    this.pageElements.map((car) => car.driveCar());
+    Promise.race(this.pageElements.map((car) => car.driveCar()))
+      .then((winnerProps) => {
+        createWinner(winnerProps);
+      })
+      .catch();
   }
 
   async resetCars() {
