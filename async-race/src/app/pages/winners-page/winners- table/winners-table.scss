@@ -1,12 +1,15 @@
 @use '../../../../styles/constants.scss';
 
 .winners-table {
-  margin: auto;
   border-radius: 5px;
   font-size: 2rem;
   width: 800px;
   border-collapse: collapse;
   white-space: nowrap;
+
+  @media (max-width: constants.$tablet-width) {
+    width: 400px;
+  }
 
   svg {
     width: 50px;

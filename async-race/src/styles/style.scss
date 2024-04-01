@@ -7,6 +7,9 @@
 
 html {
   font-size: 8px;
+  @media (max-width: constants.$tablet-width) {
+    font-size: 6px;
+  }
 }
 
 body {

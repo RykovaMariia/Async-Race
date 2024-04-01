@@ -3,8 +3,10 @@ import { ApiService } from './api-service';
 export type Status = 'started' | 'stopped' | 'drive';
 
 class ApiEngineService extends ApiService {
-  private requestEngine(id: number, status: Status) {
-    return this.request(`?id=${id}&status=${status}`, { method: 'PATCH' });
+  private async requestEngine(id: number, status: Status) {
+    return this.request(`?id=${id}&status=${status}`, { method: 'PATCH' }).then((res) =>
+      res.json(),
+    );
   }
 
   starCarsEngine(id: number) {

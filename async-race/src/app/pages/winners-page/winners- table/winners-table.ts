@@ -3,7 +3,8 @@ import { BaseComponent } from '../../../components/base-component';
 import { SvgContainer } from '../../../components/svg-container/svg-container';
 import { Car } from '../../../interfaces/car';
 import { apiGarageService } from '../../../services/api-garage-service';
-import { apiWinnersService } from '../../../services/api-winners-service';
+import { Order, Sort, apiWinnersService } from '../../../services/api-winners-service';
+import { winnersService } from '../../../services/winners-service';
 
 interface Winner {
   id: number;
@@ -12,6 +13,12 @@ interface Winner {
 }
 
 export class WinnersTable extends BaseComponent {
+  private rows: Promise<BaseComponent<HTMLElement>>[] = [];
+
+  private isWinsSortedAsc: boolean = false;
+
+  private isTimeSortedAsc: boolean = false;
+
   constructor() {
     super({
       tagName: 'table',
@@ -20,10 +27,30 @@ export class WinnersTable extends BaseComponent {
 
     const headersRow = new BaseComponent({ tagName: 'tr' });
     const number = new BaseComponent({ tagName: 'th', textContent: 'Number' });
-    const car = new BaseComponent({ tagName: 'th', textContent: 'Car' });
+    const car = new BaseComponent({ tagName: 'th', textContent: 'Car', classNames: 'table__car' });
     const name = new BaseComponent({ tagName: 'th', textContent: 'Name' });
     const wins = new BaseComponent({ tagName: 'th', textContent: 'Wins' });
+    wins.addEventListener('click', () => {
+      this.destroyRows();
+      if (this.isWinsSortedAsc) {
+        this.drawTable('wins', 'desc');
+        this.isWinsSortedAsc = false;
+      } else {
+        this.drawTable('wins', 'asc');
+        this.isWinsSortedAsc = true;
+      }
+    });
     const bestTime = new BaseComponent({ tagName: 'th', textContent: 'Best time' });
+    bestTime.addEventListener('click', () => {
+      this.destroyRows();
+      if (this.isTimeSortedAsc) {
+        this.drawTable('time', 'desc');
+        this.isTimeSortedAsc = false;
+      } else {
+        this.drawTable('time', 'asc');
+        this.isTimeSortedAsc = true;
+      }
+    });
 
     headersRow.insertChildren([number, car, name, wins, bestTime]);
 
@@ -32,10 +59,16 @@ export class WinnersTable extends BaseComponent {
     this.drawTable();
   }
 
-  async drawTable() {
-    const winners: Winner[] = await apiWinnersService.getWinners(1);
+  async drawTable(sort?: Sort, order?: Order) {
+    let winners: Winner[] = [];
+    const page = winnersService.getCurrentPage();
+    if (sort && order) {
+      winners = await apiWinnersService.getSortingWinners({ page, sort, order });
+    } else {
+      winners = await apiWinnersService.getWinners(page);
+    }
 
-    winners.forEach(async (winner) => {
+    this.rows = winners.map(async (winner) => {
       const carWinner: Car = await apiGarageService.getCar(winner.id);
 
       const row = new BaseComponent({ tagName: 'tr' });
@@ -49,6 +82,11 @@ export class WinnersTable extends BaseComponent {
 
       row.insertChildren([number, car, name, wins, bestTime]);
       this.insertChild(row);
+      return row;
     });
+  }
+
+  destroyRows() {
+    this.rows.map((row) => row.then((el) => el.destroy()));
   }
 }

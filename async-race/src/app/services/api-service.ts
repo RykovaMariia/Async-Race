@@ -25,7 +25,7 @@ export abstract class ApiService {
 
       const response = await fetch(`${API_URL}/${this.path}/${endpoint}`, config);
       if (!response.ok) throw new Error('failed to patch data');
-      return await response.json();
+      return response;
     } catch (error) {
       throw new Error(`failed to patch data ${error}`);
     }

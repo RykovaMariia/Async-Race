@@ -1,24 +1,26 @@
 import { ApiService } from './api-service';
 
 class ApiGarageService extends ApiService {
-  getCars() {
-    return this.request('', { method: 'GET' });
+  async getCars() {
+    return this.request('', { method: 'GET' }).then((res) => res.json());
   }
 
-  getCar(id: number) {
-    return this.request(`${id}`, { method: 'GET' });
+  async getCar(id: number) {
+    return this.request(`${id}`, { method: 'GET' }).then((res) => res.json());
   }
 
-  createCar({ carName: nameCar, carColor: colorCar }: { carName: string; carColor: string }) {
-    return this.request('', { method: 'POST', body: { name: nameCar, color: colorCar } });
+  async createCar({ carName: nameCar, carColor: colorCar }: { carName: string; carColor: string }) {
+    return this.request('', { method: 'POST', body: { name: nameCar, color: colorCar } }).then(
+      (res) => res.json(),
+    );
   }
 
-  deleteCar(id: number) {
-    return this.request(`${id}`, { method: 'DELETE' });
+  async deleteCar(id: number) {
+    return this.request(`${id}`, { method: 'DELETE' }).then((res) => res.json());
   }
 
-  updateCar(id: number, update: { name: string; color: string }) {
-    return this.request(`${id}`, { method: 'PUT', body: update });
+  async updateCar(id: number, update: { name: string; color: string }) {
+    return this.request(`${id}`, { method: 'PUT', body: update }).then((res) => res.json());
   }
 }
 

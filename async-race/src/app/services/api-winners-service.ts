@@ -4,28 +4,36 @@ export type Sort = 'id' | 'time' | 'wins';
 export type Order = 'desc' | 'asc';
 
 class ApiWinnersService extends ApiService {
-  getWinners(page: number) {
-    return this.request(`?_page=${page}&limit=10`, { method: 'GET' });
+  async getWinners(page: number) {
+    return this.request(`?_page=${page}&_limit=10`, { method: 'GET' }).then((res) => res.json());
   }
 
-  getSortingWinners({ page, sort, order }: { page: number; sort: Sort; order: Order }) {
-    return this.request(`?_page=${page}&limit=10&sort=${sort}&order=${order}`, { method: 'GET' });
+  async getTotalCount(page: number) {
+    return this.request(`?_page=${page}&_limit=10`, { method: 'GET' }).then((res) =>
+      res.headers.get('X-Total-Count'),
+    );
   }
 
-  getWinner(id: number) {
-    return this.request(`${id}`, { method: 'GET' });
+  async getSortingWinners({ page, sort, order }: { page: number; sort: Sort; order: Order }) {
+    return this.request(`?_page=${page}&_limit=10&_sort=${sort}&_order=${order}`, {
+      method: 'GET',
+    }).then((res) => res.json());
   }
 
-  createWinner({ id, wins, time }: { id: number; wins: number; time: number }) {
-    return this.request('', { method: 'POST', body: { id, wins, time } });
+  async getWinner(id: number) {
+    return this.request(`${id}`, { method: 'GET' }).then((res) => res.json());
   }
 
-  deleteWinner(id: number) {
-    return this.request(`${id}`, { method: 'DELETE' });
+  async createWinner({ id, wins, time }: { id: number; wins: number; time: number }) {
+    return this.request('', { method: 'POST', body: { id, wins, time } }).then((res) => res.json());
   }
 
-  updateWinner(id: number, update: { wins: number; time: number }) {
-    return this.request(`${id}`, { method: 'PUT', body: update });
+  async deleteWinner(id: number) {
+    return this.request(`${id}`, { method: 'DELETE' }).then((res) => res.json());
+  }
+
+  async updateWinner(id: number, update: { wins: number; time: number }) {
+    return this.request(`${id}`, { method: 'PUT', body: update }).then((res) => res.json());
   }
 }
 

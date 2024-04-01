@@ -91,6 +91,7 @@ export class CarsList extends BaseComponent {
 
   async onDeleteCar(id: number) {
     await apiGarageService.deleteCar(id);
+    await apiWinnersService.deleteWinner(id);
     garageService.addCarCount(-1);
     await this.drawCars();
   }

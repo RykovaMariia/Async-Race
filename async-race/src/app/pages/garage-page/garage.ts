@@ -17,7 +17,7 @@ export class Garage extends BaseComponent {
   private garageHeading = new BaseComponent({ tagName: 'h2', classNames: 'garage-heading' });
 
   private backPageButton = new Button(
-    { textContent: 'back page' },
+    { textContent: 'back-page' },
     {
       onclick: () => {
         this.onClickBackPageButton();
@@ -26,7 +26,7 @@ export class Garage extends BaseComponent {
   );
 
   private nextPageButton = new Button(
-    { textContent: 'next page' },
+    { textContent: 'next-page' },
     {
       onclick: () => {
         this.onClickNextPageButton();
