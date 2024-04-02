@@ -36,7 +36,7 @@ export class GarageSettings extends BaseComponent {
         onclick: () => {
           for (let i = 0; i < 100; i += 1) {
             this.carListCallBacks.onCreateCar(getRandomCar());
-            garageService.addCarCount(1);
+            garageService.reduceCarCount();
           }
         },
       },
@@ -48,7 +48,7 @@ export class GarageSettings extends BaseComponent {
         buttonName: 'create',
         onSubmit: (value: GarageFormValue) => {
           this.carListCallBacks.onCreateCar(value);
-          garageService.addCarCount(1);
+          garageService.reduceCarCount();
         },
       },
     );
@@ -63,7 +63,7 @@ export class GarageSettings extends BaseComponent {
       this.isRaceButton = false;
     } else {
       this.carListCallBacks.onResetCars();
-      this.raceResetButton.setTextContent('RICE');
+      this.raceResetButton.setTextContent('RACE');
       this.isRaceButton = true;
     }
   }

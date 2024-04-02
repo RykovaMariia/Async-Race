@@ -2,10 +2,18 @@ import './header.scss';
 import { AppRoute } from '../../enums/app-route';
 import { BaseComponent } from '../base-component';
 import { Link } from '../link/link';
-import { Observable } from '../../services/observable';
+import { localStorageService } from '../../services/storage-service';
 
 export class Header extends BaseComponent {
-  private isGaragePageOpen = new Observable<boolean>(true);
+  private garageButton = new Link(
+    { textContent: 'GARAGE', classNames: 'button_garage' },
+    AppRoute.Garage,
+  );
+
+  private winnersButton = new Link(
+    { textContent: 'WINNERS', classNames: 'button_winners' },
+    AppRoute.Winners,
+  );
 
   constructor() {
     super({ tagName: 'header', classNames: 'header' });
@@ -17,29 +25,23 @@ export class Header extends BaseComponent {
     });
 
     const buttonsContainer = new BaseComponent({ tagName: 'div', classNames: 'button-container' });
+    this.setDisableStateButtons();
 
-    const garageButton = new Link(
-      { textContent: 'GARAGE', classNames: 'button_garage' },
-      AppRoute.Garage,
-    );
-    garageButton.setDisableState(true);
-
-    garageButton.setOnClick(() => this.isGaragePageOpen.notify(true));
-
-    const winnersButton = new Link(
-      { textContent: 'WINNERS', classNames: 'button_winners' },
-      AppRoute.Winners,
-    );
-
-    winnersButton.setOnClick(() => this.isGaragePageOpen.notify(false));
-
-    this.isGaragePageOpen.subscribe((isOpen) => {
-      garageButton.setDisableState(isOpen);
-      winnersButton.setDisableState(!isOpen);
+    this.garageButton.setOnClick(() => {
+      this.setDisableStateButtons();
     });
 
-    buttonsContainer.insertChildren([garageButton, winnersButton]);
+    this.winnersButton.setOnClick(() => {
+      this.setDisableStateButtons();
+    });
+
+    buttonsContainer.insertChildren([this.garageButton, this.winnersButton]);
 
     this.insertChildren([gameName, buttonsContainer]);
+  }
+
+  setDisableStateButtons() {
+    this.garageButton.setDisableState(localStorageService.getData('openPage') === 'garage');
+    this.winnersButton.setDisableState(localStorageService.getData('openPage') === 'winners');
   }
 }

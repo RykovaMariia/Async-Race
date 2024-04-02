@@ -1,8 +1,18 @@
 import { ApiService } from './api-service';
 
+const LIMIT_CARS_ON_PAGE = 7;
+
 class ApiGarageService extends ApiService {
-  async getCars() {
-    return this.request('', { method: 'GET' }).then((res) => res.json());
+  async getCars(page: number) {
+    return this.request(`?_page=${page}&_limit=${LIMIT_CARS_ON_PAGE}`, { method: 'GET' }).then(
+      (res) => res.json(),
+    );
+  }
+
+  async getCarsCount(page: number) {
+    return this.request(`?_page=${page}&_limit=${LIMIT_CARS_ON_PAGE}`, { method: 'GET' }).then(
+      (res) => res.headers.get('X-Total-Count'),
+    );
   }
 
   async getCar(id: number) {

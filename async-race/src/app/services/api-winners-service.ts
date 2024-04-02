@@ -3,21 +3,28 @@ import { ApiService } from './api-service';
 export type Sort = 'id' | 'time' | 'wins';
 export type Order = 'desc' | 'asc';
 
+const LIMIT_WINNERS_ON_PAGE = 10;
+
 class ApiWinnersService extends ApiService {
   async getWinners(page: number) {
-    return this.request(`?_page=${page}&_limit=10`, { method: 'GET' }).then((res) => res.json());
+    return this.request(`?_page=${page}&_limit=${LIMIT_WINNERS_ON_PAGE}`, { method: 'GET' }).then(
+      (res) => res.json(),
+    );
   }
 
-  async getTotalCount(page: number) {
-    return this.request(`?_page=${page}&_limit=10`, { method: 'GET' }).then((res) =>
-      res.headers.get('X-Total-Count'),
+  async getWinnersCount(page: number) {
+    return this.request(`?_page=${page}&_limit=${LIMIT_WINNERS_ON_PAGE}`, { method: 'GET' }).then(
+      (res) => res.headers.get('X-Total-Count'),
     );
   }
 
   async getSortingWinners({ page, sort, order }: { page: number; sort: Sort; order: Order }) {
-    return this.request(`?_page=${page}&_limit=10&_sort=${sort}&_order=${order}`, {
-      method: 'GET',
-    }).then((res) => res.json());
+    return this.request(
+      `?_page=${page}&_limit=${LIMIT_WINNERS_ON_PAGE}&_sort=${sort}&_order=${order}`,
+      {
+        method: 'GET',
+      },
+    ).then((res) => res.json());
   }
 
   async getWinner(id: number) {

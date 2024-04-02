@@ -10,16 +10,6 @@ import { WinnerModal } from '../../../components/winner-modal/winner-modal';
 
 const MAX_CARS_COUNT_IN_PAGE = 7;
 
-function filterForPage(cars: CarContainer[]) {
-  const currentPage = garageService.getPageNumber();
-  const pageElements = cars.filter(
-    (_, index) =>
-      index >= (currentPage - 1) * MAX_CARS_COUNT_IN_PAGE &&
-      index + 1 <= currentPage * MAX_CARS_COUNT_IN_PAGE,
-  );
-  return pageElements;
-}
-
 async function onUpdateCar(id: number, value: GarageFormValue) {
   await apiGarageService.updateCar(id, { name: value.carName, color: value.carColor });
 }
@@ -40,8 +30,6 @@ async function createWinner(winnerProps: WinnerProps) {
 export class CarsList extends BaseComponent {
   private carElements: CarContainer[] = [];
 
-  private pageElements: CarContainer[] = [];
-
   constructor() {
     super({
       tagName: 'div',
@@ -50,54 +38,40 @@ export class CarsList extends BaseComponent {
     this.drawCars();
   }
 
-  private async addAllCars() {
-    const cars: Car[] = await apiGarageService.getCars();
+  async drawCars() {
+    const cars: Car[] = await apiGarageService.getCars(garageService.getCurrentPage());
     const carContainers = cars.map((car) => {
       return new CarContainer(
         { classNames: 'car-container' },
         { car, onDeleteCar: (id: number) => this.onDeleteCar(id), onUpdateCar },
       );
     });
-    this.carElements = [];
-    this.carElements.push(...carContainers);
-    garageService.updatePageCount(Math.ceil(cars.length / MAX_CARS_COUNT_IN_PAGE));
-  }
+    this.carElements = carContainers;
 
-  async drawCars() {
-    await this.addAllCars();
-    this.pageElements = filterForPage(this.carElements);
-
+    garageService.updatePageCount(Math.ceil(garageService.getCarCount() / MAX_CARS_COUNT_IN_PAGE));
     this.element.innerHTML = '';
-    this.insertChildren([...this.pageElements]);
+    this.insertChildren([...carContainers]);
   }
 
   async addNewCar(value: GarageFormValue) {
-    const car: Car = await apiGarageService.createCar({
-      carName: value.carName,
-      carColor: value.carColor,
-    });
-    const carContainer = new CarContainer(
-      { classNames: 'car-container' },
-      { car, onDeleteCar: (id: number) => this.onDeleteCar(id), onUpdateCar },
-    );
-    this.carElements.push(carContainer);
-    if (
-      garageService.getPageNumber() === garageService.getPageCount() &&
-      this.carElements.length % MAX_CARS_COUNT_IN_PAGE === 0
-    ) {
-      await this.drawCars();
-    }
-  }
+    await apiGarageService.createCar({ carName: value.carName, carColor: value.carColor });
 
-  async onDeleteCar(id: number) {
-    await apiGarageService.deleteCar(id);
-    await apiWinnersService.deleteWinner(id);
-    garageService.addCarCount(-1);
     await this.drawCars();
   }
 
+  async onDeleteCar(id: number) {
+    try {
+      garageService.increaseCarCount();
+      await apiGarageService.deleteCar(id);
+      await this.drawCars();
+      await apiWinnersService.deleteWinner(id);
+    } catch (error) {
+      /* empty */
+    }
+  }
+
   async raceCars() {
-    Promise.race(this.pageElements.map((car) => car.driveCar()))
+    Promise.race(this.carElements.map((car) => car.driveCar()))
       .then((winnerProps) => {
         apiGarageService.getCar(winnerProps.id).then((car) => {
           const modal = new WinnerModal({ name: car.name, time: winnerProps.time });
@@ -110,6 +84,6 @@ export class CarsList extends BaseComponent {
   }
 
   async resetCars() {
-    this.pageElements.map((car) => car.resetCar());
+    this.carElements.map((car) => car.resetCar());
   }
 }

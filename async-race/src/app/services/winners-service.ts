@@ -1,6 +1,9 @@
+import { BaseComponent } from '../components/base-component';
+import { Button } from '../components/button/button';
+import { apiWinnersService } from './api-winners-service';
 import { Observable } from './observable';
 
-class WinnersService {
+export class WinnersService {
   private currentPage = new Observable<number>(1);
 
   private winnersCount = new Observable<number>(0);
@@ -22,7 +25,7 @@ class WinnersService {
     });
   }
 
-  increasePageNumber() {
+  increaseCurrentPage() {
     this.currentPage.notify((prev) => {
       if (prev < Math.ceil(this.winnersCount.getValue() / 10)) {
         return prev + 1;
@@ -35,16 +38,36 @@ class WinnersService {
     this.currentPage.notify(this.currentPage.getValue());
   }
 
-  setWinnersCount(totalCount: number) {
-    this.winnersCount.notify(totalCount);
-  }
-
   getWinnersCount() {
     return this.winnersCount.getValue();
   }
 
-  subscribeWinnersCount(cb: (count: number) => void) {
-    this.winnersCount.subscribe((count) => cb(count));
+  async setTotalCount() {
+    const totalCount = await apiWinnersService.getWinnersCount(this.getCurrentPage());
+    if (totalCount) {
+      this.winnersCount.notify(+totalCount);
+    }
+  }
+
+  subscribeWinnersCount({
+    winnersHeading,
+    backPageButton,
+    nextPageButton,
+  }: {
+    winnersHeading: BaseComponent;
+    backPageButton: Button;
+    nextPageButton: Button;
+  }) {
+    this.setTotalCount();
+    this.winnersCount.subscribe((count) => {
+      winnersHeading.setTextContent(`WINNERS (${count})`);
+
+      backPageButton.setDisableState(this.getCurrentPage() === 1);
+
+      nextPageButton.setDisableState(
+        this.getCurrentPage() === Math.ceil(this.getWinnersCount() / 10),
+      );
+    });
   }
 }
 

@@ -1,29 +1,67 @@
+import { BaseComponent } from '../components/base-component';
+import { Button } from '../components/button/button';
+import { apiGarageService } from './api-garage-service';
 import { Observable } from './observable';
 
-class GarageService {
+export class GarageService {
   private carCount = new Observable<number>(0);
 
   private pageNumber = new Observable<number>(1);
 
   private pageCount = new Observable<number>(1);
 
-  addCarCount(num: number) {
-    this.carCount.notify((count) => count + num);
+  async addCarCount() {
+    const count = await apiGarageService.getCarsCount(this.getCurrentPage());
+    if (count) {
+      this.carCount.notify(+count);
+    }
   }
 
-  updateCarCount(num: number) {
-    this.carCount.notify(num);
+  subscribeCarCount({
+    garageHeading,
+    backPageButton,
+    nextPageButton,
+  }: {
+    garageHeading: BaseComponent;
+    backPageButton: Button;
+    nextPageButton: Button;
+  }) {
+    this.addCarCount();
+    this.carCount.subscribe((count) => {
+      garageHeading.setTextContent(`GARAGE (${count})`);
+
+      backPageButton.setDisableState(this.getCurrentPage() === 1);
+
+      this.pageCount.subscribe((pageCount) =>
+        nextPageButton.setDisableState(this.getCurrentPage() === pageCount),
+      );
+    });
   }
 
-  subscribeCarCount(cb: (count: number) => void) {
-    this.carCount.subscribe((count) => cb(count));
+  getCarCount() {
+    return this.carCount.getValue();
   }
 
-  getPageNumber() {
+  reduceCarCount() {
+    this.carCount.notify((count) => count + 1);
+  }
+
+  increaseCarCount() {
+    this.carCount.notify((count) => count - 1);
+  }
+
+  getCurrentPage() {
     return this.pageNumber.getValue();
   }
 
-  reducePageNumber() {
+  subscribeCurrentPage(pageHeading: BaseComponent) {
+    this.pageNumber.subscribe((page) => {
+      pageHeading.setTextContent(`Page #${page}`);
+    });
+    this.pageNumber.notify(this.getCurrentPage());
+  }
+
+  reduceCurrentPage() {
     this.pageNumber.notify((prev) => {
       if (prev > 1) {
         return prev - 1;
@@ -32,7 +70,7 @@ class GarageService {
     });
   }
 
-  increasePageNumber() {
+  increaseCurrentPage() {
     this.pageNumber.notify((prev) => {
       if (prev < this.pageCount.getValue()) {
         return prev + 1;
@@ -41,24 +79,12 @@ class GarageService {
     });
   }
 
-  updatePageNumber(num: number) {
-    this.pageNumber.notify(num);
-  }
-
-  subscribePageNumber(cb: (page: number) => void) {
-    this.pageNumber.subscribe((page) => cb(page));
-  }
-
   getPageCount() {
     return this.pageCount.getValue();
   }
 
   updatePageCount(num: number) {
     this.pageCount.notify(num);
-  }
-
-  subscribePageCount(cb: (count: number) => void) {
-    this.pageCount.subscribe((count) => cb(count));
   }
 }
 
