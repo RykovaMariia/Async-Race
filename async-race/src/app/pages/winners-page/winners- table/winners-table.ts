@@ -2,8 +2,8 @@ import './winners-table.scss';
 import { BaseComponent } from '../../../components/base-component';
 import { SvgContainer } from '../../../components/svg-container/svg-container';
 import { Car } from '../../../interfaces/car';
-import { apiGarageService } from '../../../services/api-garage-service';
-import { Order, Sort, apiWinnersService } from '../../../services/api-winners-service';
+import { apiGarageService } from '../../../services/api-services/api-garage-service';
+import { Order, Sort, apiWinnersService } from '../../../services/api-services/api-winners-service';
 import { winnersService } from '../../../services/winners-service';
 
 interface Winner {

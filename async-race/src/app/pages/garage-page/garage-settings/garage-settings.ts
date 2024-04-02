@@ -15,6 +15,7 @@ export class GarageSettings extends BaseComponent {
 
   private isRaceButton = true;
 
+  // eslint-disable-next-line max-lines-per-function
   constructor(private carListCallBacks: CarListCallBack) {
     super({
       tagName: 'div',
@@ -52,6 +53,11 @@ export class GarageSettings extends BaseComponent {
         },
       },
     );
+
+    garageService.subscribeFormValues((formValues) => {
+      createCarForm.setTextInputValue(formValues.text);
+      createCarForm.setColorInputValue(formValues.color);
+    });
 
     this.insertChildren([this.raceResetButton, randomButton, createCarForm]);
   }

@@ -4,6 +4,7 @@ interface InputProps {
   type?: string;
   placeholder?: string;
   id?: string;
+  onInput?: (value: string) => void;
 }
 
 export class Input extends BaseComponent<HTMLInputElement> {
@@ -13,6 +14,13 @@ export class Input extends BaseComponent<HTMLInputElement> {
     this.setAttribute({ name: 'placeholder', value: inputProps?.placeholder ?? '' });
     this.setAttribute({ name: 'type', value: inputProps?.type ?? 'text' });
     if (inputProps?.id) this.setAttribute({ name: 'id', value: inputProps.id });
+    if (inputProps?.onInput) this.addOnInput(inputProps.onInput);
+  }
+
+  addOnInput(onInput: (value: string) => void) {
+    this.addEventListener('input', () => {
+      onInput(this.getValue());
+    });
   }
 
   getValue() {

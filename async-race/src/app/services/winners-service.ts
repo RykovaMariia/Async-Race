@@ -1,6 +1,6 @@
 import { BaseComponent } from '../components/base-component';
 import { Button } from '../components/button/button';
-import { apiWinnersService } from './api-winners-service';
+import { apiWinnersService } from './api-services/api-winners-service';
 import { Observable } from './observable';
 
 export class WinnersService {

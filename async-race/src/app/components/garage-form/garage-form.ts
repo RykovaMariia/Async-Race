@@ -2,6 +2,7 @@ import './garage-form.scss';
 import { BaseComponent, TaggedElementProps } from '../base-component';
 import { Button } from '../button/button';
 import { Input } from '../input/input';
+import { garageService } from '../../services/garage-service';
 
 export interface GarageFormValue {
   carName: string;
@@ -24,10 +25,19 @@ export class GarageForm extends BaseComponent {
       {
         classNames: 'input_name',
       },
-      { placeholder: 'Inter name your car' },
+      {
+        placeholder: 'Inter name your car',
+        onInput: (value) => garageService.setTextValue(value),
+      },
     );
 
-    this.colorInput = new Input({ classNames: 'input_color' }, { type: 'color' });
+    this.colorInput = new Input(
+      { classNames: 'input_color' },
+      {
+        type: 'color',
+        onInput: (value) => garageService.setColorValue(value),
+      },
+    );
     const submitButton = new Button(
       {
         classNames: 'button_submit',

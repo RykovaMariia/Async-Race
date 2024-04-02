@@ -3,9 +3,9 @@ import { BaseComponent } from '../../../components/base-component';
 import { CarContainer, WinnerProps } from '../../../components/car-container/car-container';
 import { GarageFormValue } from '../../../components/garage-form/garage-form';
 import { Car } from '../../../interfaces/car';
-import { apiGarageService } from '../../../services/api-garage-service';
+import { apiGarageService } from '../../../services/api-services/api-garage-service';
 import { garageService } from '../../../services/garage-service';
-import { apiWinnersService } from '../../../services/api-winners-service';
+import { apiWinnersService } from '../../../services/api-services/api-winners-service';
 import { WinnerModal } from '../../../components/winner-modal/winner-modal';
 
 const MAX_CARS_COUNT_IN_PAGE = 7;

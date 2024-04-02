@@ -1,7 +1,12 @@
 import { BaseComponent } from '../components/base-component';
 import { Button } from '../components/button/button';
-import { apiGarageService } from './api-garage-service';
+import { apiGarageService } from './api-services/api-garage-service';
 import { Observable } from './observable';
+
+interface FormValues {
+  text: string;
+  color: string;
+}
 
 export class GarageService {
   private carCount = new Observable<number>(0);
@@ -9,6 +14,8 @@ export class GarageService {
   private pageNumber = new Observable<number>(1);
 
   private pageCount = new Observable<number>(1);
+
+  formValues = new Observable<FormValues>({ text: '', color: '#000000' });
 
   async addCarCount() {
     const count = await apiGarageService.getCarsCount(this.getCurrentPage());
@@ -85,6 +92,27 @@ export class GarageService {
 
   updatePageCount(num: number) {
     this.pageCount.notify(num);
+  }
+
+  subscribeFormValues(callback: (formValues: FormValues) => void) {
+    this.formValues.subscribe(callback);
+    this.formValues.notify(this.formValues.getValue());
+  }
+
+  setTextValue(value: string) {
+    this.formValues.notify((formValues) => {
+      // eslint-disable-next-line no-param-reassign
+      formValues.text = value;
+      return formValues;
+    });
+  }
+
+  setColorValue(value: string) {
+    this.formValues.notify((formValues) => {
+      // eslint-disable-next-line no-param-reassign
+      formValues.color = value;
+      return formValues;
+    });
   }
 }
 
