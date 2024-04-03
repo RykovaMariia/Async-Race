@@ -4,6 +4,7 @@ interface InputProps {
   type?: string;
   placeholder?: string;
   id?: string;
+  required?: string;
   onInput?: (value: string) => void;
 }
 
@@ -15,6 +16,7 @@ export class Input extends BaseComponent<HTMLInputElement> {
     this.setAttribute({ name: 'type', value: inputProps?.type ?? 'text' });
     if (inputProps?.id) this.setAttribute({ name: 'id', value: inputProps.id });
     if (inputProps?.onInput) this.addOnInput(inputProps.onInput);
+    if (inputProps?.required) this.setAttribute({ name: 'required', value: inputProps.required });
   }
 
   addOnInput(onInput: (value: string) => void) {

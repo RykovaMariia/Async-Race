@@ -1,5 +1,6 @@
 import { BaseComponent } from '../components/base-component';
 import { Button } from '../components/button/button';
+import { WINNERS_LIMIT_ON_PAGE } from '../data/constants';
 import { apiWinnersService } from './api-services/api-winners-service';
 import { Observable } from './observable';
 
@@ -27,7 +28,7 @@ export class WinnersService {
 
   increaseCurrentPage() {
     this.currentPage.notify((prev) => {
-      if (prev < Math.ceil(this.winnersCount.getValue() / 10)) {
+      if (prev < Math.ceil(this.winnersCount.getValue() / WINNERS_LIMIT_ON_PAGE)) {
         return prev + 1;
       }
       return prev;
@@ -65,7 +66,7 @@ export class WinnersService {
       backPageButton.setDisableState(this.getCurrentPage() === 1);
 
       nextPageButton.setDisableState(
-        this.getCurrentPage() === Math.ceil(this.getWinnersCount() / 10),
+        this.getCurrentPage() === Math.ceil(this.getWinnersCount() / WINNERS_LIMIT_ON_PAGE),
       );
     });
   }

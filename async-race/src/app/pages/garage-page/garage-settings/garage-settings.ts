@@ -4,6 +4,8 @@ import { GarageForm, GarageFormValue } from '../../../components/garage-form/gar
 import { garageService } from '../../../services/garage-service';
 import { getRandomCar } from '../../../utils/generate-random-car';
 
+export const CAR_COUNT_FOR_GENERATE_RANDOM = 100;
+
 interface CarListCallBack {
   onCreateCar: (value: GarageFormValue) => Promise<void>;
   onRaceCars: () => Promise<void>;
@@ -31,11 +33,13 @@ export class GarageSettings extends BaseComponent {
       },
     );
 
+    garageService.subscribeDisableRaceButton(this.raceResetButton);
+
     const randomButton = new Button(
       { textContent: 'create random cars' },
       {
         onclick: () => {
-          for (let i = 0; i < 100; i += 1) {
+          for (let i = 0; i < CAR_COUNT_FOR_GENERATE_RANDOM; i += 1) {
             this.carListCallBacks.onCreateCar(getRandomCar());
             garageService.reduceCarCount();
           }

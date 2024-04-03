@@ -3,6 +3,8 @@ import { Button } from '../components/button/button';
 import { apiGarageService } from './api-services/api-garage-service';
 import { Observable } from './observable';
 
+const DEFAULT_COLOR = '#000000';
+
 interface FormValues {
   text: string;
   color: string;
@@ -15,7 +17,9 @@ export class GarageService {
 
   private pageCount = new Observable<number>(1);
 
-  formValues = new Observable<FormValues>({ text: '', color: '#000000' });
+  private formValues = new Observable<FormValues>({ text: '', color: DEFAULT_COLOR });
+
+  private isDisableRaceButton = new Observable<boolean>(false);
 
   async addCarCount() {
     const count = await apiGarageService.getCarsCount(this.getCurrentPage());
@@ -113,6 +117,19 @@ export class GarageService {
       formValues.color = value;
       return formValues;
     });
+  }
+
+  subscribeDisableRaceButton(button: Button) {
+    this.isDisableRaceButton.subscribe((isDisable) => button.setDisableState(isDisable));
+    this.isDisableRaceButton.notify(false);
+  }
+
+  disableRaceButton() {
+    this.isDisableRaceButton.notify(true);
+  }
+
+  enableRaceButton() {
+    this.isDisableRaceButton.notify(false);
   }
 }
 

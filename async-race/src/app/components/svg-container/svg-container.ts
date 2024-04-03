@@ -42,6 +42,5 @@ export class SvgContainer extends BaseComponent {
     if (translateZ || translateX === 0) {
       this.element.style.transform = `translateX(${translateZ}px)`;
     }
-    // console.log('%o %o %o', translateX, translateY, translateZ);
   }
 }

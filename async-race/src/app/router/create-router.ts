@@ -7,16 +7,16 @@ export function createRoutes() {
       path: '',
       component: async () => {
         localStorageService.saveData('openPage', 'garage');
-        const { Garage } = await import('../pages/garage-page/garage');
-        return new Garage();
+        const { garagePage } = await import('../pages/garage-page/garage');
+        return garagePage;
       },
     },
     {
       path: AppRoute.Garage,
       component: async () => {
         localStorageService.saveData('openPage', 'garage');
-        const { Garage } = await import('../pages/garage-page/garage');
-        return new Garage();
+        const { garagePage } = await import('../pages/garage-page/garage');
+        return garagePage;
       },
     },
     {

@@ -21,7 +21,7 @@ export class Garage extends BaseComponent {
     garageService.subscribeCurrentPage(pageHeading);
 
     this.carList = new CarsList();
-    const garageButtons = new GarageSettings({
+    const garageSettings = new GarageSettings({
       onCreateCar: (value) => this.onSubmitCreateButton(value),
       onRaceCars: () => this.carList.raceCars(),
       onResetCars: () => this.carList.resetCars(),
@@ -37,7 +37,7 @@ export class Garage extends BaseComponent {
 
     this.insertChildren([
       garageHeading,
-      garageButtons,
+      garageSettings,
       pageHeading,
       this.carList,
       pageButtonsContainer,
@@ -48,3 +48,5 @@ export class Garage extends BaseComponent {
     await this.carList.addNewCar(value);
   }
 }
+
+export const garagePage = new Garage();

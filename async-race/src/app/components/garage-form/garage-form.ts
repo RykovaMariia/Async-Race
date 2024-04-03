@@ -27,6 +27,7 @@ export class GarageForm extends BaseComponent {
       },
       {
         placeholder: 'Inter name your car',
+        required: 'required',
         onInput: (value) => garageService.setTextValue(value),
       },
     );

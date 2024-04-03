@@ -6,6 +6,9 @@ import { GarageForm, GarageFormValue } from '../garage-form/garage-form';
 import { Button } from '../button/button';
 import { apiEngineService } from '../../services/api-services/api-engine-service';
 import { Observable } from '../../services/observable';
+import { garageService } from '../../services/garage-service';
+
+const DISTANCE = document.body.clientWidth - 220;
 
 interface CarContainerProps {
   car: Car;
@@ -27,6 +30,10 @@ function easeInOut(time: number) {
   return 0.5 * (1 - Math.cos(Math.PI * time));
 }
 
+function conversionToSecFromMillisec(milliseconds: number) {
+  return milliseconds / 1000;
+}
+
 export class CarContainer extends BaseComponent {
   private id: number;
 
@@ -45,6 +52,10 @@ export class CarContainer extends BaseComponent {
   private settingsButton: Button;
 
   private deleteButton: Button;
+
+  private driveButton: Button;
+
+  private stopButton: Button;
 
   // eslint-disable-next-line max-lines-per-function
   constructor(props: TaggedElementProps, carContainerProps: CarContainerProps) {
@@ -103,21 +114,19 @@ export class CarContainer extends BaseComponent {
     settingsContainer.insertChildren([this.settingsButton, this.deleteButton, this.carName]);
 
     const powerSvg = new SvgContainer('power');
-    const powerButton = new Button({ classNames: 'button_power', parentNode: powerSvg });
+    this.driveButton = new Button({ classNames: 'button_power', parentNode: powerSvg });
     const stopSvg = new SvgContainer('stop');
-    const stopButton = new Button({ classNames: 'button_stop', parentNode: stopSvg });
-    powerButton.setOnClick(() => {
+    this.stopButton = new Button({ classNames: 'button_stop', parentNode: stopSvg });
+    this.driveButton.setOnClick(() => {
       this.driveCar();
-      powerButton.toggleButton(stopButton);
     });
-    stopButton.setOnClick(() => {
+    this.stopButton.setOnClick(() => {
       this.resetCar();
-      stopButton.toggleButton(powerButton);
     });
 
     const flagSvg = new SvgContainer('flag', { classNames: 'flag-icon' });
 
-    this.trackContainer.insertChildren([powerButton, this.carSvg, flagSvg]);
+    this.trackContainer.insertChildren([this.driveButton, this.carSvg, flagSvg]);
 
     this.insertChildren([settingsContainer, this.trackContainer]);
   }
@@ -133,14 +142,19 @@ export class CarContainer extends BaseComponent {
     this.settingsForm?.setColorInputValue(car.color);
   }
 
+  setDisableStateDriveButton(state: boolean) {
+    this.driveButton.setDisableState(state);
+  }
+
   async driveCar() {
+    garageService.disableRaceButton();
+    this.driveButton.toggleButton(this.stopButton);
     this.setDisableStateSettingsButtons(true);
     const rideParam: RideParam = await apiEngineService.starCarsEngine(this.id);
     const animationTime = rideParam.distance / rideParam.velocity;
     this.driveResponse(this.id);
     return this.startAnimation(animationTime, (progress) => {
-      const distance = document.body.clientWidth - 220;
-      const translateX = easeInOut(progress) * distance;
+      const translateX = easeInOut(progress) * DISTANCE;
       this.carSvg.setTransform({ translateX });
     });
   }
@@ -166,18 +180,22 @@ export class CarContainer extends BaseComponent {
           this.requestAnimationFrameId = requestAnimationFrame(measure);
           return;
         }
-        res({ id: this.id, time: +(duration / 1000).toFixed(2) });
+        garageService.enableRaceButton();
+        res({ id: this.id, time: +conversionToSecFromMillisec(+duration).toFixed(2) });
       };
       this.requestAnimationFrameId = requestAnimationFrame(measure);
     });
   };
 
   async resetCar() {
+    garageService.disableRaceButton();
+    this.stopButton.toggleButton(this.driveButton);
     this.setDisableStateSettingsButtons(false);
     const rideParam: RideParam = await apiEngineService.stopCarsEngine(this.id);
     if (rideParam.velocity === 0) {
       cancelAnimationFrame(this.requestAnimationFrameId);
       this.carSvg.setTransform({ translateX: 0 });
     }
+    garageService.enableRaceButton();
   }
 }

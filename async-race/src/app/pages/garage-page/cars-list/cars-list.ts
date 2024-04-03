@@ -7,8 +7,7 @@ import { apiGarageService } from '../../../services/api-services/api-garage-serv
 import { garageService } from '../../../services/garage-service';
 import { apiWinnersService } from '../../../services/api-services/api-winners-service';
 import { WinnerModal } from '../../../components/winner-modal/winner-modal';
-
-const MAX_CARS_COUNT_IN_PAGE = 7;
+import { CAR_LIMIT_ON_PAGE } from '../../../data/constants';
 
 async function onUpdateCar(id: number, value: GarageFormValue) {
   await apiGarageService.updateCar(id, { name: value.carName, color: value.carColor });
@@ -48,7 +47,7 @@ export class CarsList extends BaseComponent {
     });
     this.carElements = carContainers;
 
-    garageService.updatePageCount(Math.ceil(garageService.getCarCount() / MAX_CARS_COUNT_IN_PAGE));
+    garageService.updatePageCount(Math.ceil(garageService.getCarCount() / CAR_LIMIT_ON_PAGE));
     this.element.innerHTML = '';
     this.insertChildren([...carContainers]);
   }

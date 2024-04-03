@@ -1,3 +1,4 @@
+import { CAR_LIMIT_ON_PAGE, WINNERS_LIMIT_ON_PAGE } from '../../data/constants';
 import { GarageService } from '../../services/garage-service';
 import { WinnersService } from '../../services/winners-service';
 import { BaseComponent } from '../base-component';
@@ -5,9 +6,9 @@ import { Button } from '../button/button';
 
 function getPageCount(service: GarageService | WinnersService) {
   if (service instanceof GarageService) {
-    return Math.ceil(service.getCarCount() / 7);
+    return Math.ceil(service.getCarCount() / CAR_LIMIT_ON_PAGE);
   }
-  return Math.ceil(service.getWinnersCount() / 10);
+  return Math.ceil(service.getWinnersCount() / WINNERS_LIMIT_ON_PAGE);
 }
 
 export class PageButtons extends BaseComponent {
