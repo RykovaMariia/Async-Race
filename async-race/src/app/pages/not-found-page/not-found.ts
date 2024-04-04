@@ -1,4 +1,4 @@
-import { BaseComponent } from '../../components/base-component';
+import { BaseComponent } from 'Components/base-component';
 
 export class NotFound extends BaseComponent {
   constructor() {

@@ -1,5 +1,5 @@
-import { Header } from './components/header/header';
-import { router } from './router/router';
+import { Header } from 'Components/header/header';
+import { router } from 'Router/router';
 
 export class App {
   constructor(private container: HTMLElement) {

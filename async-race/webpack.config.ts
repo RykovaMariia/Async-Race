@@ -44,6 +44,17 @@ const baseConfig: webpack.Configuration = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    alias: {
+      Components: path.resolve(__dirname, 'src/app/components/'),
+      Data: path.resolve(__dirname, 'src/app/data/'),
+      Enums: path.resolve(__dirname, 'src/app/enums/'),
+      Interfaces: path.resolve(__dirname, 'src/app/interfaces/'),
+      Pages: path.resolve(__dirname, 'src/app/pages/'),
+      Router: path.resolve(__dirname, 'src/app/router/'),
+      Services: path.resolve(__dirname, 'src/app/services/'),
+      Utils: path.resolve(__dirname, 'src/app/utils/'),
+      Assets: path.resolve(__dirname, 'src/assets/'),
+    },
   },
 };
 

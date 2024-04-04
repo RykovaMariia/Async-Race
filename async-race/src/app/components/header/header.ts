@@ -1,8 +1,8 @@
 import './header.scss';
-import { AppRoute } from '../../enums/app-route';
-import { BaseComponent } from '../base-component';
-import { Link } from '../link/link';
-import { localStorageService } from '../../services/storage-service';
+import { AppRoute } from 'Enums/app-route';
+import { BaseComponent } from 'Components/base-component';
+import { Link } from 'Components/link/link';
+import { localStorageService } from 'Services/storage-service';
 
 export class Header extends BaseComponent {
   private garageButton = new Link(

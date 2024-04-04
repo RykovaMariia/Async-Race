@@ -1,7 +1,7 @@
-import { AppRoute } from '../../enums/app-route';
-import { router } from '../../router/router';
-import { TaggedElementProps } from '../base-component';
-import { Button } from '../button/button';
+import { AppRoute } from 'Enums/app-route';
+import { TaggedElementProps } from 'Components/base-component';
+import { Button } from 'Components/button/button';
+import { router } from 'Router/router';
 
 export class Link extends Button {
   constructor(props: TaggedElementProps, toNavigation: AppRoute) {

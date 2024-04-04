@@ -1,8 +1,8 @@
-import { BaseComponent } from '../../../components/base-component';
-import { Button } from '../../../components/button/button';
-import { GarageForm, GarageFormValue } from '../../../components/garage-form/garage-form';
-import { garageService } from '../../../services/garage-service';
-import { getRandomCar } from '../../../utils/generate-random-car';
+import { BaseComponent } from 'Components/base-component';
+import { Button } from 'Components/button/button';
+import { GarageForm, GarageFormValue } from 'Components/garage-form/garage-form';
+import { garageService } from 'Services/garage-service';
+import { getRandomCar } from 'Utils/generate-random-car';
 
 export const CAR_COUNT_FOR_GENERATE_RANDOM = 100;
 

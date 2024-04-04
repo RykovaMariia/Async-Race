@@ -1,8 +1,8 @@
-import { CAR_LIMIT_ON_PAGE, WINNERS_LIMIT_ON_PAGE } from '../../data/constants';
-import { GarageService } from '../../services/garage-service';
-import { WinnersService } from '../../services/winners-service';
-import { BaseComponent } from '../base-component';
-import { Button } from '../button/button';
+import { CAR_LIMIT_ON_PAGE, WINNERS_LIMIT_ON_PAGE } from 'Data/constants';
+import { GarageService } from 'Services/garage-service';
+import { WinnersService } from 'Services/winners-service';
+import { BaseComponent } from 'Components/base-component';
+import { Button } from 'Components/button/button';
 
 function getPageCount(service: GarageService | WinnersService) {
   if (service instanceof GarageService) {

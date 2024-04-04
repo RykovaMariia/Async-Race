@@ -1,5 +1,5 @@
-import { AppRoute } from '../enums/app-route';
-import { localStorageService } from '../services/storage-service';
+import { AppRoute } from 'Enums/app-route';
+import { localStorageService } from 'Services/storage-service';
 
 export function createRoutes() {
   return [
@@ -7,7 +7,7 @@ export function createRoutes() {
       path: '',
       component: async () => {
         localStorageService.saveData('openPage', 'garage');
-        const { garagePage } = await import('../pages/garage-page/garage');
+        const { garagePage } = await import('Pages/garage-page/garage');
         return garagePage;
       },
     },
@@ -15,7 +15,7 @@ export function createRoutes() {
       path: AppRoute.Garage,
       component: async () => {
         localStorageService.saveData('openPage', 'garage');
-        const { garagePage } = await import('../pages/garage-page/garage');
+        const { garagePage } = await import('Pages/garage-page/garage');
         return garagePage;
       },
     },
@@ -23,7 +23,7 @@ export function createRoutes() {
       path: AppRoute.Winners,
       component: async () => {
         localStorageService.saveData('openPage', 'winners');
-        const { Winners } = await import('../pages/winners-page/winners');
+        const { Winners } = await import('Pages/winners-page/winners');
         return new Winners();
       },
     },

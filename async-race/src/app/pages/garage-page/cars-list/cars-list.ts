@@ -1,13 +1,13 @@
 import './cars-list.scss';
-import { BaseComponent } from '../../../components/base-component';
-import { CarContainer, WinnerProps } from '../../../components/car-container/car-container';
-import { GarageFormValue } from '../../../components/garage-form/garage-form';
-import { Car } from '../../../interfaces/car';
-import { apiGarageService } from '../../../services/api-services/api-garage-service';
-import { garageService } from '../../../services/garage-service';
-import { apiWinnersService } from '../../../services/api-services/api-winners-service';
-import { WinnerModal } from '../../../components/winner-modal/winner-modal';
-import { CAR_LIMIT_ON_PAGE } from '../../../data/constants';
+import { BaseComponent } from 'Components/base-component';
+import { CarContainer, WinnerProps } from 'Components/car-container/car-container';
+import { GarageFormValue } from 'Components/garage-form/garage-form';
+import { WinnerModal } from 'Components/winner-modal/winner-modal';
+import { CAR_LIMIT_ON_PAGE } from 'Data/constants';
+import { Car } from 'Interfaces/car';
+import { apiGarageService } from 'Services/api-services/api-garage-service';
+import { garageService } from 'Services/garage-service';
+import { apiWinnersService } from 'Services/api-services/api-winners-service';
 
 async function onUpdateCar(id: number, value: GarageFormValue) {
   await apiGarageService.updateCar(id, { name: value.carName, color: value.carColor });

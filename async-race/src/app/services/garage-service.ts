@@ -1,7 +1,7 @@
-import { BaseComponent } from '../components/base-component';
-import { Button } from '../components/button/button';
-import { apiGarageService } from './api-services/api-garage-service';
-import { Observable } from './observable';
+import { BaseComponent } from 'Components/base-component';
+import { Button } from 'Components/button/button';
+import { apiGarageService } from 'Services/api-services/api-garage-service';
+import { Observable } from 'Services/observable';
 
 const DEFAULT_COLOR = '#000000';
 
@@ -103,19 +103,9 @@ export class GarageService {
     this.formValues.notify(this.formValues.getValue());
   }
 
-  setTextValue(value: string) {
+  updateFormValues(property: 'text' | 'color', value: string) {
     this.formValues.notify((formValues) => {
-      // eslint-disable-next-line no-param-reassign
-      formValues.text = value;
-      return formValues;
-    });
-  }
-
-  setColorValue(value: string) {
-    this.formValues.notify((formValues) => {
-      // eslint-disable-next-line no-param-reassign
-      formValues.color = value;
-      return formValues;
+      return { ...formValues, [property]: value };
     });
   }
 

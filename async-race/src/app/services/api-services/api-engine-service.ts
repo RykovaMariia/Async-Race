@@ -1,4 +1,4 @@
-import { ApiService } from './api-service';
+import { ApiService } from 'Services/api-services/api-service';
 
 export type Status = 'started' | 'stopped' | 'drive';
 

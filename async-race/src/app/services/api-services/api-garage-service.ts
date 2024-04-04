@@ -1,5 +1,5 @@
-import { CAR_LIMIT_ON_PAGE } from '../../data/constants';
-import { ApiService } from './api-service';
+import { CAR_LIMIT_ON_PAGE } from 'Data/constants';
+import { ApiService } from 'Services/api-services/api-service';
 
 class ApiGarageService extends ApiService {
   async getCars(page: number) {

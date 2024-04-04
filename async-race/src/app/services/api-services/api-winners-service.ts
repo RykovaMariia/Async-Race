@@ -1,5 +1,5 @@
-import { WINNERS_LIMIT_ON_PAGE } from '../../data/constants';
-import { ApiService } from './api-service';
+import { WINNERS_LIMIT_ON_PAGE } from 'Data/constants';
+import { ApiService } from 'Services/api-services/api-service';
 
 export type Sort = 'id' | 'time' | 'wins';
 export type Order = 'desc' | 'asc';

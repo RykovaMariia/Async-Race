@@ -1,10 +1,10 @@
 import './winners-table.scss';
-import { BaseComponent } from '../../../components/base-component';
-import { SvgContainer } from '../../../components/svg-container/svg-container';
-import { Car } from '../../../interfaces/car';
-import { apiGarageService } from '../../../services/api-services/api-garage-service';
-import { Order, Sort, apiWinnersService } from '../../../services/api-services/api-winners-service';
-import { winnersService } from '../../../services/winners-service';
+import { BaseComponent } from 'Components/base-component';
+import { SvgContainer } from 'Components/svg-container/svg-container';
+import { Car } from 'Interfaces/car';
+import { apiGarageService } from 'Services/api-services/api-garage-service';
+import { Order, Sort, apiWinnersService } from 'Services/api-services/api-winners-service';
+import { winnersService } from 'Services/winners-service';
 
 interface Winner {
   id: number;

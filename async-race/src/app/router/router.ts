@@ -1,7 +1,7 @@
-import { AppRoute } from '../enums/app-route';
-import { Route } from '../interfaces/route';
-import { createRoutes } from './create-router';
-import { BaseComponent } from '../components/base-component';
+import { BaseComponent } from 'Components/base-component';
+import { AppRoute } from 'Enums/app-route';
+import { Route } from 'Interfaces/route';
+import { createRoutes } from 'Router/create-router';
 
 function parseUrl(url: string) {
   const urlInfo: { path?: string; resource?: string } = {};
@@ -20,7 +20,7 @@ export class Router {
   private notFoundRoute = {
     path: AppRoute.NotFound,
     component: async () => {
-      const { NotFound } = await import('../pages/not-found-page/not-found');
+      const { NotFound } = await import('Pages/not-found-page/not-found');
       return new NotFound();
     },
   };

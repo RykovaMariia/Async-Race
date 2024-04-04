@@ -1,10 +1,10 @@
 import './garage.scss';
-import { BaseComponent } from '../../components/base-component';
-import { CarsList } from './cars-list/cars-list';
-import { garageService } from '../../services/garage-service';
-import { GarageSettings } from './garage-settings/garage-settings';
-import { GarageFormValue } from '../../components/garage-form/garage-form';
-import { PageButtons } from '../../components/page-buttons/page-buttons';
+import { BaseComponent } from 'Components/base-component';
+import { GarageFormValue } from 'Components/garage-form/garage-form';
+import { PageButtons } from 'Components/page-buttons/page-buttons';
+import { CarsList } from 'Pages/garage-page/cars-list/cars-list';
+import { garageService } from 'Services/garage-service';
+import { GarageSettings } from 'Pages/garage-page/garage-settings/garage-settings';
 
 export class Garage extends BaseComponent {
   private carList: CarsList;

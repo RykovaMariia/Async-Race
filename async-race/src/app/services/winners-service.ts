@@ -1,8 +1,8 @@
-import { BaseComponent } from '../components/base-component';
-import { Button } from '../components/button/button';
-import { WINNERS_LIMIT_ON_PAGE } from '../data/constants';
-import { apiWinnersService } from './api-services/api-winners-service';
-import { Observable } from './observable';
+import { BaseComponent } from 'Components/base-component';
+import { Button } from 'Components/button/button';
+import { WINNERS_LIMIT_ON_PAGE } from 'Data/constants';
+import { apiWinnersService } from 'Services/api-services/api-winners-service';
+import { Observable } from 'Services/observable';
 
 export class WinnersService {
   private currentPage = new Observable<number>(1);

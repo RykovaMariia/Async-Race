@@ -1,8 +1,8 @@
 import './winners.scss';
-import { BaseComponent } from '../../components/base-component';
-import { winnersService } from '../../services/winners-service';
-import { WinnersTable } from './winners- table/winners-table';
-import { PageButtons } from '../../components/page-buttons/page-buttons';
+import { BaseComponent } from 'Components/base-component';
+import { PageButtons } from 'Components/page-buttons/page-buttons';
+import { winnersService } from 'Services/winners-service';
+import { WinnersTable } from 'Pages/winners-page/winners- table/winners-table';
 
 export class Winners extends BaseComponent {
   private table = new WinnersTable();

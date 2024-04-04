@@ -1,4 +1,4 @@
-import { BaseComponent, TaggedElementProps } from '../base-component';
+import { BaseComponent, TaggedElementProps } from 'Components/base-component';
 
 interface InputProps {
   type?: string;

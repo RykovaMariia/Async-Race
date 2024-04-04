@@ -1,4 +1,4 @@
-import { BaseComponent, TaggedElementProps } from '../base-component';
+import { BaseComponent, TaggedElementProps } from 'Components/base-component';
 
 export type SvgId = 'car' | 'flag' | 'delete' | 'settings' | 'power' | 'stop' | 'close';
 

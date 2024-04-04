@@ -1,12 +1,13 @@
 import './car-container.scss';
-import { Car } from '../../interfaces/car';
-import { BaseComponent, TaggedElementProps } from '../base-component';
-import { SvgContainer } from '../svg-container/svg-container';
-import { GarageForm, GarageFormValue } from '../garage-form/garage-form';
-import { Button } from '../button/button';
-import { apiEngineService } from '../../services/api-services/api-engine-service';
-import { Observable } from '../../services/observable';
-import { garageService } from '../../services/garage-service';
+import { Car } from 'Interfaces/car';
+import { BaseComponent, TaggedElementProps } from 'Components/base-component';
+import { SvgContainer } from 'Components/svg-container/svg-container';
+import { GarageForm, GarageFormValue } from 'Components/garage-form/garage-form';
+import { Button } from 'Components/button/button';
+import { apiEngineService } from 'Services/api-services/api-engine-service';
+import { Observable } from 'Services/observable';
+import { garageService } from 'Services/garage-service';
+import { conversionToSecFromMillisec, easeInOut } from 'Utils/utils';
 
 const DISTANCE = document.body.clientWidth - 220;
 
@@ -24,14 +25,6 @@ interface RideParam {
 export interface WinnerProps {
   id: number;
   time: number;
-}
-
-function easeInOut(time: number) {
-  return 0.5 * (1 - Math.cos(Math.PI * time));
-}
-
-function conversionToSecFromMillisec(milliseconds: number) {
-  return milliseconds / 1000;
 }
 
 export class CarContainer extends BaseComponent {
@@ -132,7 +125,7 @@ export class CarContainer extends BaseComponent {
   }
 
   private setDisableStateSettingsButtons(state: boolean) {
-    [this.settingsButton, this.deleteButton].map((button) => button.setDisableState(state));
+    [this.settingsButton, this.deleteButton].forEach((button) => button.setDisableState(state));
   }
 
   private setCar(car: Car) {

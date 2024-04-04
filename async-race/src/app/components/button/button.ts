@@ -1,5 +1,5 @@
 import './button.scss';
-import { BaseComponent, TaggedElementProps } from '../base-component';
+import { BaseComponent, TaggedElementProps } from 'Components/base-component';
 
 interface ButtonProps {
   type?: string;
