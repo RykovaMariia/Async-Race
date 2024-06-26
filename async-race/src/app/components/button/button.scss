@@ -1,0 +1,118 @@
+@use '../../../styles/constants.scss';
+
+.button {
+  width: max-content;
+  user-select: none;
+  box-sizing: border-box;
+  background-color: constants.$color-text-light;
+  color: constants.$color-text-dark;
+  cursor: pointer;
+  padding: 5px 10px;
+  font-size: 2rem;
+  font-family: inherit;
+  border: none;
+  position: relative;
+  box-shadow: 6px 6px 0 constants.$color-shadow;
+  transform: skewX(-15deg);
+  z-index: 1;
+  transition: 0.5s;
+
+  &:hover {
+    color: constants.$color-text-light;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    color: constants.$color-text-disabled;
+  }
+}
+
+.button::before {
+  content: '';
+  width: 0;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: linear-gradient(
+    to right,
+    constants.$color-button-dark 0%,
+    constants.$color-button-light 100%
+  );
+  transition: 0.5s ease-in-out;
+  display: block;
+  z-index: -1;
+}
+
+.button:hover::before,
+.button_garage:disabled::before,
+.button_winners:disabled::before {
+  width: 100%;
+}
+
+.button_garage:hover {
+  padding-left: 45px;
+}
+
+.button_winners:hover {
+  padding-right: 45px;
+}
+
+.button_garage:disabled,
+.button_winners:disabled {
+  padding: 5px 10px;
+  color: constants.$color-text-light;
+}
+
+.button_delete,
+.button_settings {
+  position: relative;
+  cursor: pointer;
+  background-color: constants.$color-background-body;
+  box-shadow: none;
+  transform: none;
+  padding: 0;
+
+  &::before {
+    height: 0;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: constants.$color-text-light;
+    transition: 0.5s ease-in-out;
+  }
+
+  &:hover {
+    svg {
+      fill: constants.$color-button-dark;
+    }
+  }
+}
+
+.button_power,
+.button_stop {
+  cursor: pointer;
+  background-color: constants.$color-background-body;
+  box-shadow: none;
+  transform: none;
+  padding: 0;
+
+  &::before {
+    height: 0;
+  }
+
+  svg {
+    width: 25px;
+    height: 25px;
+    fill: constants.$color-text-light;
+    transition: 0.5s ease-in-out;
+  }
+
+  &:hover {
+    svg {
+      fill: constants.$color-button-light;
+    }
+  }
+}

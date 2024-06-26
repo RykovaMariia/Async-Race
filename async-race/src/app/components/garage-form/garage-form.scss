@@ -1,0 +1,40 @@
+@use '../../../styles/constants.scss';
+
+.form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.input_name {
+  box-sizing: border-box;
+  padding: 5px 10px;
+  font-size: 2rem;
+  font-family: inherit;
+  outline: none;
+  background-color: constants.$color-text-light;
+  border: 2px solid constants.$color-text-light;
+  box-shadow: 6px 6px 0 constants.$color-shadow;
+  transform: skewX(-15deg);
+  transition: 0.5s;
+
+  &:focus,
+  &:valid {
+    border: 2px solid constants.$color-button-light;
+  }
+}
+
+.input_color {
+  appearance: none;
+  outline: none;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 6px 6px 0 constants.$color-shadow;
+  transform: skewX(-15deg);
+  z-index: 1;
+  width: 20%;
+  height: 45px;
+}

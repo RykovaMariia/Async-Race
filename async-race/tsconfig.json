@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "outDir": "./dist",
+
+    /* Interop Constraints */
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Type Checking */
+    "strict": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "Components/*": ["src/app/components/*"],
+      "Data/*": ["src/app/data/*"],
+      "Enums/*": ["src/app/enums/*"],
+      "Interfaces/*": ["src/app/interfaces/*"],
+      "Pages/*": ["src/app/pages/*"],
+      "Router/*": ["src/app/router/*"],
+      "Services/*": ["src/app/services/*"],
+      "Utils/*": ["src/app/utils/*"],
+      "Assets/*": ["src/assets/*"]
+    }
+  }
+}

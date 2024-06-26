@@ -1,0 +1,21 @@
+@use './constants.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 8px;
+
+  @media (max-width: constants.$tablet-width) {
+    font-size: 6px;
+  }
+}
+
+body {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 2rem;
+  color: constants.$color-text-light;
+  background-color: constants.$color-background-body;
+}

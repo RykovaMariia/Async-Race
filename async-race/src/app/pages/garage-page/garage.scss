@@ -1,0 +1,26 @@
+@use '../../../styles/constants.scss';
+
+.garage {
+  position: relative;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.garage-heading {
+  width: 100%;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.page-buttons {
+  display: flex;
+  gap: 30px;
+}
+
+.garage__setting {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

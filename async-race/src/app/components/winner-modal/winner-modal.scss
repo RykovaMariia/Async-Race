@@ -1,0 +1,42 @@
+@use '../../../styles/constants.scss';
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal__window {
+  position: absolute;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 0 40px constants.$color-shadow;
+  background-color: constants.$color-text-light;
+  padding: 20px;
+  color: constants.$color-text-dark;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  z-index: 102;
+  font-size: 3rem;
+}
+
+.modal-close {
+  position: absolute;
+  cursor: pointer;
+  right: 10px;
+  top: 10px;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
